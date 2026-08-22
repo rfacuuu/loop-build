@@ -2,6 +2,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { timeAgo, type Listing } from "@/lib/loop-data";
+import { categoryStyle } from "@/lib/category-icons";
 import { useState } from "react";
 
 export function ListingSheet({
@@ -13,7 +14,8 @@ export function ListingSheet({
 }) {
   const [full, setFull] = useState(false);
   if (!listing) return null;
-  const accent = listing.intent === "ofrezco" ? "text-primary" : "text-accent-foreground";
+  const accent = listing.intent === "ofrezco" ? "text-primary" : "text-accent";
+  const { Icon, tile, badge } = categoryStyle(`${listing.category} ${listing.title}`);
 
   return (
     <Sheet
@@ -23,27 +25,31 @@ export function ListingSheet({
         onOpenChange(o);
       }}
     >
-      <SheetContent side="bottom" className="mx-auto max-w-md rounded-t-3xl border-border">
+      <SheetContent side="bottom" className="mx-auto max-w-md overflow-y-auto rounded-t-3xl border-border">
         <SheetHeader className="text-left">
           <SheetTitle className="flex items-center gap-2 text-xl">
-            <span>{listing.emoji}</span> {listing.title}
+            <Icon className="h-5 w-5 shrink-0" /> {listing.title}
           </SheetTitle>
         </SheetHeader>
         <div className="space-y-4 px-4 pb-8">
-          <div
-            className={`grid h-36 place-items-center rounded-2xl text-5xl ${
-              listing.intent === "ofrezco" ? "bg-primary/10" : "bg-accent/15"
-            }`}
-          >
-            {listing.emoji}
-          </div>
+          {listing.photo ? (
+            <img
+              src={listing.photo}
+              alt={listing.title}
+              className="h-40 w-full rounded-2xl object-cover"
+            />
+          ) : (
+            <div className={`grid h-36 place-items-center rounded-2xl ${tile}`}>
+              <Icon className="h-14 w-14" />
+            </div>
+          )}
           <div className="flex flex-wrap gap-2">
             <Badge variant={listing.intent === "ofrezco" ? "default" : "secondary"} className="rounded-full">
               {listing.intent === "ofrezco" ? "Ofrezco" : "Necesito"}
             </Badge>
-            <Badge variant="outline" className="rounded-full">
-              {listing.category}
-            </Badge>
+            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${badge}`}>
+              <Icon className="h-3.5 w-3.5" /> {listing.category}
+            </span>
             <Badge variant="outline" className="rounded-full">
               {listing.zone}
             </Badge>
@@ -56,11 +62,15 @@ export function ListingSheet({
               <Row label="Publicado por" value={listing.owner} />
               <Row label="Cantidad" value={`${listing.quantity} unidad(es)`} />
               <Row label="Publicado" value={timeAgo(listing.createdAt)} />
+              <Row label="Nodo asignado" value={listing.zone} />
               <Row label="Zona aproximada" value={`${listing.zone} (radio ~500 m)`} />
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {listing.tags.map((t) => (
-                  <span key={t} className="rounded-full bg-background px-2.5 py-1 text-xs">
-                    #{t}
+                  <span
+                    key={t}
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${badge}`}
+                  >
+                    <Icon className="h-3 w-3" /> {t}
                   </span>
                 ))}
               </div>
