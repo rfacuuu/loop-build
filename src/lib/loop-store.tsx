@@ -13,9 +13,10 @@ interface LoopState {
   listings: Listing[];
   dark: boolean;
   signIn: () => void;
+  signInDemo: () => void;
   signOut: () => void;
   toggleDark: () => void;
-  addListing: (l: Omit<Listing, "id" | "createdAt" | "x" | "y">) => Listing;
+  addListing: (l: Omit<Listing, "id" | "createdAt" | "lat" | "lng">) => Listing;
   removeListing: (id: string) => void;
 }
 
