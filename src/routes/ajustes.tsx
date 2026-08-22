@@ -3,14 +3,14 @@ import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Bell, FileText, Moon, Shield, UserCog } from "lucide-react";
+import { RiNotification3Line as Bell, RiFileTextLine as FileText, RiMoonLine as Moon, RiShieldCheckLine as Shield, RiUserSettingsLine as UserCog } from "@remixicon/react";
 
 export const Route = createFileRoute("/ajustes")({
   head: () => ({
     meta: [
-      { title: "Ajustes · LOOP Salta" },
+      { title: "Ajustes · LOOP" },
       { name: "description", content: "Cuenta de Google, tema, notificaciones y privacidad en LOOP." },
-      { property: "og:title", content: "Ajustes · LOOP Salta" },
+      { property: "og:title", content: "Ajustes · LOOP" },
       { property: "og:description", content: "Configurá tu cuenta y preferencias de LOOP." },
     ],
   }),
@@ -65,7 +65,7 @@ function AjustesPage() {
           Cerrar sesión
         </Button>
         <p className="pb-4 text-center text-xs text-muted-foreground">
-          LOOP Salta · Build. Learn. Reuse. Repeat.
+          LOOP · Build. Learn. Reuse. Repeat.
         </p>
       </div>
     </AppShell>

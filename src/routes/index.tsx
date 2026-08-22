@@ -1,20 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, ClientOnly } from "@tanstack/react-router";
+import { Suspense, lazy, useState } from "react";
 import { AppShell } from "@/components/loop/AppShell";
 import { ListingSheet } from "@/components/loop/ListingDetail";
 import { useLoop } from "@/lib/loop-store";
 import type { Listing } from "@/lib/loop-data";
 
+const MapView = lazy(() => import("@/components/loop/MapView"));
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LOOP · Mapa maker de hardware en Salta" },
+      { title: "LOOP · Mapa maker de hardware reutilizable" },
       {
         name: "description",
         content:
-          "Explorá el mapa de componentes electrónicos ofrecidos y buscados por makers de Salta Capital.",
+          "Explorá el mapa interactivo de componentes electrónicos ofrecidos y buscados por la comunidad maker.",
       },
-      { property: "og:title", content: "LOOP · Mapa maker de hardware en Salta" },
+      { property: "og:title", content: "LOOP · Mapa maker de hardware reutilizable" },
       {
         property: "og:description",
         content: "Build. Learn. Reuse. Repeat. Mantené la tecnología en movimiento.",
@@ -35,7 +37,7 @@ function MapaPage() {
     <AppShell>
       <div className="space-y-4 p-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Mapa de Salta</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Mapa</h1>
           <p className="text-sm text-muted-foreground">
             Ubicaciones aproximadas por privacidad · {visible.length} publicaciones activas
           </p>
@@ -59,28 +61,12 @@ function MapaPage() {
           ))}
         </div>
 
-        <div className="relative h-[380px] overflow-hidden rounded-2xl border border-border bg-[oklch(0.95_0.02_150)] shadow-sm">
-          <MapBackdrop />
-          {visible.map((l) => (
-            <button
-              key={l.id}
-              onClick={() => setSelected(l)}
-              aria-label={l.title}
-              style={{ left: `${l.x}%`, top: `${l.y}%` }}
-              className="absolute -translate-x-1/2 -translate-y-1/2"
-            >
-              <span
-                className={`block h-4 w-4 rounded-full ring-4 ${
-                  l.intent === "ofrezco"
-                    ? "bg-primary ring-primary/25"
-                    : "bg-accent ring-accent/25"
-                }`}
-              />
-            </button>
-          ))}
-          <span className="absolute bottom-2 left-3 rounded-full bg-background/80 px-2 py-1 text-[10px] text-muted-foreground">
-            Salta Capital · microcentro, UNSa, E.E.T. N°3100
-          </span>
+        <div className="relative h-[380px] overflow-hidden rounded-2xl border border-border bg-muted shadow-sm">
+          <ClientOnly fallback={<div className="h-full w-full animate-pulse bg-muted" />}>
+            <Suspense fallback={<div className="h-full w-full animate-pulse bg-muted" />}>
+              <MapView listings={visible} onSelect={setSelected} />
+            </Suspense>
+          </ClientOnly>
         </div>
 
         <ul className="space-y-3">
@@ -119,22 +105,5 @@ function MapaPage() {
       </div>
       <ListingSheet listing={selected} onOpenChange={(o) => !o && setSelected(null)} />
     </AppShell>
-  );
-}
-
-function MapBackdrop() {
-  return (
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-      <rect width="100" height="100" fill="oklch(0.96 0.015 140)" />
-      <path d="M0 70 L100 55 L100 100 L0 100 Z" fill="oklch(0.93 0.03 150)" />
-      <path d="M0 30 L100 22" stroke="oklch(0.99 0 0)" strokeWidth="3" />
-      <path d="M0 52 L100 45" stroke="oklch(0.99 0 0)" strokeWidth="4" />
-      <path d="M0 78 L100 70" stroke="oklch(0.99 0 0)" strokeWidth="3" />
-      <path d="M22 0 L28 100" stroke="oklch(0.99 0 0)" strokeWidth="3" />
-      <path d="M52 0 L56 100" stroke="oklch(0.99 0 0)" strokeWidth="4" />
-      <path d="M80 0 L84 100" stroke="oklch(0.99 0 0)" strokeWidth="3" />
-      <rect x="58" y="24" width="14" height="12" fill="oklch(0.9 0.05 150)" />
-      <rect x="10" y="58" width="12" height="10" fill="oklch(0.9 0.05 150)" />
-    </svg>
   );
 }
