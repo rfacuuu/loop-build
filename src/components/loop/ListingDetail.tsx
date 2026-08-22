@@ -105,8 +105,10 @@ export function ListingSheet({
             {listing.contact.value}
           </Button>
         </div>
+        <Lightbox src={zoom} alt={listing.title} onClose={() => setZoom(null)} />
       </SheetContent>
     </Sheet>
+
   );
 }
 
