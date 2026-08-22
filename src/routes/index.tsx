@@ -10,7 +10,7 @@ const MapView = lazy(() => import("@/components/loop/MapView"));
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): { focus?: string } =>
-    typeof s.focus === "string" ? { focus: s.focus } : {},
+    typeof s["focus"] === "string" ? { focus: s["focus"] } : {},
   head: () => ({
     meta: [
       { title: "LOOP · Mapa maker de hardware reutilizable" },
