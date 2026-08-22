@@ -177,7 +177,7 @@ function OfrezcoStep() {
       },
       owner: "Vos",
       quantity: 1,
-      photo: photos[0],
+      ...(photos[0] ? { photo: photos[0] } : {}),
     });
     toast.success("Publicado en el mapa con pin azul");
     navigate({ to: "/" });
