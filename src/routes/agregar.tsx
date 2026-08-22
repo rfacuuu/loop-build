@@ -329,6 +329,8 @@ function NecesitoStep() {
   const [text, setText] = useState("");
   const [listening, setListening] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [zoom, setZoom] = useState<string | null>(null);
+
   const [refined, setRefined] = useState<{ title: string; category: string; tags: string[] } | null>(
     null,
   );
