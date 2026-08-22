@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ActividadRouteImport } from './routes/actividad'
+import { Route as AgregarRouteImport } from './routes/agregar'
 import { Route as AjustesRouteImport } from './routes/ajustes'
 import { Route as PerfilRouteImport } from './routes/perfil'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const ActividadRoute = ActividadRouteImport.update({
   id: '/actividad',
   path: '/actividad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgregarRoute = AgregarRouteImport.update({
+  id: '/agregar',
+  path: '/agregar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AjustesRoute = AjustesRouteImport.update({
@@ -38,12 +44,14 @@ const PerfilRoute = PerfilRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/actividad': typeof ActividadRoute
+  '/agregar': typeof AgregarRoute
   '/ajustes': typeof AjustesRoute
   '/perfil': typeof PerfilRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/actividad': typeof ActividadRoute
+  '/agregar': typeof AgregarRoute
   '/ajustes': typeof AjustesRoute
   '/perfil': typeof PerfilRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/actividad': typeof ActividadRoute
+  '/agregar': typeof AgregarRoute
   '/ajustes': typeof AjustesRoute
   '/perfil': typeof PerfilRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/actividad' | '/ajustes' | '/perfil'
+  fullPaths: '/' | '/actividad' | '/agregar' | '/ajustes' | '/perfil'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/actividad' | '/ajustes' | '/perfil'
-  id: '__root__' | '/' | '/actividad' | '/ajustes' | '/perfil'
+  to: '/' | '/actividad' | '/agregar' | '/ajustes' | '/perfil'
+  id: '__root__' | '/' | '/actividad' | '/agregar' | '/ajustes' | '/perfil'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActividadRoute: typeof ActividadRoute
+  AgregarRoute: typeof AgregarRoute
   AjustesRoute: typeof AjustesRoute
   PerfilRoute: typeof PerfilRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/actividad'
       fullPath: '/actividad'
       preLoaderRoute: typeof ActividadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agregar': {
+      id: '/agregar'
+      path: '/agregar'
+      fullPath: '/agregar'
+      preLoaderRoute: typeof AgregarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ajustes': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActividadRoute: ActividadRoute,
+  AgregarRoute: AgregarRoute,
   AjustesRoute: AjustesRoute,
   PerfilRoute: PerfilRoute,
 }

@@ -128,7 +128,7 @@ function OfrezcoStep() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const capture = () => {
-    const next = DETECTIONS[photos.length % DETECTIONS.length];
+    const next = DETECTIONS[photos.length % DETECTIONS.length]!;
     setPhotos((p) => [...p, next.emoji]);
     setAnalyzing(true);
     setTimeout(() => {
@@ -266,7 +266,7 @@ function NecesitoStep() {
             : t.includes("motor") || t.includes("driver")
               ? "Drivers y motores"
               : "Microcontroladores";
-      const title = text.trim().split(/[.,\n]/)[0].slice(0, 48);
+      const title = (text.trim().split(/[.,\n]/)[0] ?? text.trim()).slice(0, 48);
       setRefined({
         title: title.charAt(0).toUpperCase() + title.slice(1),
         category,
