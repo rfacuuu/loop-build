@@ -16,7 +16,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLoop } from "@/lib/loop-store";
 import { categoryStyle } from "@/lib/category-icons";
 import { analyzeComponent, type VisionResult } from "@/lib/vision.functions";
+import { extractTags } from "@/lib/autotags";
+import { Lightbox } from "@/components/loop/Lightbox";
 import { toast } from "sonner";
+
 import ofrezcoImg from "@/assets/ofrezco.jpg.asset.json";
 import necesitoImg from "@/assets/necesito.jpg.asset.json";
 
