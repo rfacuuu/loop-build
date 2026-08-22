@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLoop } from "@/lib/loop-store";
 import { toast } from "sonner";
+import ofrezcoImg from "@/assets/ofrezco.jpg.asset.json";
+import necesitoImg from "@/assets/necesito.jpg.asset.json";
 
 export const Route = createFileRoute("/agregar")({
   head: () => ({
