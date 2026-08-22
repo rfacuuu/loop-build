@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { RiVerifiedBadgeFill as BadgeCheck, RiStarFill as Star, RiDeleteBin6Line as Trash2 } from "@remixicon/react";
 import { AppShell } from "@/components/loop/AppShell";
+import { ListingSheet } from "@/components/loop/ListingDetail";
 import { useLoop } from "@/lib/loop-store";
-import { timeAgo } from "@/lib/loop-data";
+import { timeAgo, type Listing } from "@/lib/loop-data";
+import { categoryStyle } from "@/lib/category-icons";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({
@@ -23,6 +25,7 @@ export const Route = createFileRoute("/perfil")({
 function PerfilPage() {
   const { user, listings, removeListing } = useLoop();
   const [tab, setTab] = useState<"necesito" | "ofrezco">("ofrezco");
+  const [selected, setSelected] = useState<Listing | null>(null);
   const mine = listings.filter((l) => l.intent === tab);
 
   return (
@@ -73,31 +76,44 @@ function PerfilPage() {
         </div>
 
         <ul className="space-y-3">
-          {mine.map((l) => (
-            <li
-              key={l.id}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm"
-            >
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-muted text-xl">
-                {l.emoji}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-semibold">{l.title}</span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {l.status} · {timeAgo(l.createdAt)}
-                </span>
-              </span>
-              <button
-                aria-label="Eliminar"
-                onClick={() => removeListing(l.id)}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+          {mine.map((l) => {
+            const { Icon, tile } = categoryStyle(`${l.category} ${l.title}`);
+            return (
+              <li
+                key={l.id}
+                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm"
               >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </li>
-          ))}
+                <button
+                  onClick={() => setSelected(l)}
+                  className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                >
+                  {l.photo ? (
+                    <img src={l.photo} alt={l.title} className="h-11 w-11 shrink-0 rounded-xl object-cover" />
+                  ) : (
+                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${tile}`}>
+                      <Icon className="h-5 w-5" />
+                    </span>
+                  )}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold">{l.title}</span>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      {l.status} · {timeAgo(l.createdAt)}
+                    </span>
+                  </span>
+                </button>
+                <button
+                  aria-label="Eliminar"
+                  onClick={() => removeListing(l.id)}
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </div>
+      <ListingSheet listing={selected} onOpenChange={(o) => !o && setSelected(null)} />
     </AppShell>
   );
 }

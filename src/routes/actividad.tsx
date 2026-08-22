@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { RiMapPin2Line as MapPin } from "@remixicon/react";
 import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { bucketOf, timeAgo } from "@/lib/loop-data";
+import { categoryStyle } from "@/lib/category-icons";
 
 export const Route = createFileRoute("/actividad")({
   head: () => ({
@@ -47,49 +49,51 @@ function ActividadPage() {
               <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {bucket}
               </h2>
-              {items.map((l) => (
-                <article
-                  key={l.id}
-                  className="rounded-2xl border border-border bg-card p-4 shadow-sm"
-                >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-xl ${
-                        l.intent === "ofrezco" ? "bg-primary/10" : "bg-accent/15"
-                      }`}
-                    >
-                      {l.emoji}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-semibold">{l.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {l.owner} · {timeAgo(l.createdAt)}
-                      </p>
-                    </div>
-                    <span
-                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium ${
-                        l.intent === "ofrezco"
-                          ? "bg-primary/10 text-primary"
-                          : "bg-accent/15 text-accent"
-                      }`}
-                    >
-                      {l.intent === "ofrezco" ? "Ofrezco" : "Necesito"}
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    {l.intent === "ofrezco"
-                      ? `${l.quantity} componente(s) salvados del e-waste`
-                      : `Busca ${l.quantity} unidad(es)`}{" "}
-                    · {l.zone}
-                  </p>
-                  <Link
-                    to="/"
-                    className="mt-3 inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium"
+              {items.map((l) => {
+                const { Icon, tile } = categoryStyle(`${l.category} ${l.title}`);
+                return (
+                  <article
+                    key={l.id}
+                    className="rounded-2xl border border-border bg-card p-4 shadow-sm"
                   >
-                    Ver en el mapa
-                  </Link>
-                </article>
-              ))}
+                    <div className="flex items-start gap-3">
+                      <span
+                        className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${tile}`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-semibold">{l.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {l.owner} · {timeAgo(l.createdAt)}
+                        </p>
+                      </div>
+                      <span
+                        className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium ${
+                          l.intent === "ofrezco"
+                            ? "bg-primary/10 text-primary"
+                            : "bg-accent/15 text-accent"
+                        }`}
+                      >
+                        {l.intent === "ofrezco" ? "Ofrezco" : "Necesito"}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      {l.intent === "ofrezco"
+                        ? `${l.quantity} componente(s) salvados del e-waste`
+                        : `Busca ${l.quantity} unidad(es)`}{" "}
+                      · {l.zone}
+                    </p>
+                    <Link
+                      to="/"
+                      search={{ focus: l.id }}
+                      className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium"
+                    >
+                      <MapPin className="h-3.5 w-3.5" /> Ver en el mapa
+                    </Link>
+                  </article>
+                );
+              })}
             </section>
           );
         })}

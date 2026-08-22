@@ -1,11 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { RiCameraLine as Camera, RiMicLine as Mic, RiSparkling2Line as Sparkles, RiArrowRightLine as ArrowRight, RiArrowLeftLine as ArrowLeft } from "@remixicon/react";
+import {
+  RiCameraLine as Camera,
+  RiImageAddLine as ImageAdd,
+  RiMicLine as Mic,
+  RiSparkling2Line as Sparkles,
+  RiArrowRightLine as ArrowRight,
+  RiArrowLeftLine as ArrowLeft,
+  RiLoader4Line as Loader,
+} from "@remixicon/react";
 import { AppShell } from "@/components/loop/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLoop } from "@/lib/loop-store";
+import { categoryStyle } from "@/lib/category-icons";
+import { analyzeComponent, type VisionResult } from "@/lib/vision.functions";
 import { toast } from "sonner";
 import ofrezcoImg from "@/assets/ofrezco.jpg.asset.json";
 import necesitoImg from "@/assets/necesito.jpg.asset.json";
@@ -27,35 +37,29 @@ export const Route = createFileRoute("/agregar")({
 
 type Step = "intent" | "ofrezco" | "necesito";
 
-const DETECTIONS = [
-  {
-    title: "ESP32 DevKit V1",
-    category: "Microcontroladores",
-    status: "Operativo - Pines sanos",
-    description:
-      "Placa de desarrollo ESP32 con WiFi 2.4 GHz y Bluetooth. Regulador AMS1117 en buen estado, headers completos.",
-    tags: ["ESP32", "WiFi", "IoT", "3.3V"],
-    emoji: "🧠",
-  },
-  {
-    title: "Driver A4988",
-    category: "Drivers y motores",
-    status: "Operativo - Con disipador",
-    description:
-      "Driver de motor paso a paso A4988 con potenciómetro de corriente funcional y disipador adherido.",
-    tags: ["A4988", "Stepper", "CNC"],
-    emoji: "⚙️",
-  },
-  {
-    title: "Fuente ATX 500W",
-    category: "Alimentación",
-    status: "Operativo - Testeada",
-    description:
-      "Fuente conmutada ATX con salidas 12V, 5V y 3.3V. Apta para convertir en fuente de banco.",
-    tags: ["ATX", "12V", "Fuente"],
-    emoji: "🔌",
-  },
-];
+/** Downscale + compress an image file into a data URL suitable for the vision model. */
+function fileToDataUrl(file: File, max = 1024): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Archivo de imagen inválido."));
+      img.onload = () => {
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return resolve(String(reader.result));
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.src = String(reader.result);
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 function AgregarPage() {
   const [step, setStep] = useState<Step>("intent");
@@ -133,20 +137,28 @@ function OfrezcoStep() {
   const navigate = useNavigate();
   const [photos, setPhotos] = useState<string[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
-  const [detected, setDetected] = useState<(typeof DETECTIONS)[number] | null>(null);
+  const [detected, setDetected] = useState<VisionResult | null>(null);
   const [notes, setNotes] = useState("");
   const [contact, setContact] = useState("");
   const [zone, setZone] = useState("Microcentro");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
-  const capture = () => {
-    const next = DETECTIONS[photos.length % DETECTIONS.length]!;
-    setPhotos((p) => [...p, next.emoji]);
-    setAnalyzing(true);
-    setTimeout(() => {
-      setDetected(next);
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      setPhotos((p) => [...p, dataUrl]);
+      setAnalyzing(true);
+      const result = await analyzeComponent({ data: { imageDataUrl: dataUrl, intent: "ofrezco" } });
+      setDetected(result);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "No se pudo analizar la imagen.");
+    } finally {
       setAnalyzing(false);
-    }, 1400);
+    }
   };
 
   const publish = () => {
@@ -165,32 +177,59 @@ function OfrezcoStep() {
       },
       owner: "Vos",
       quantity: 1,
-      emoji: detected.emoji,
+      ...(photos[0] ? { photo: photos[0] } : {}),
     });
     toast.success("Publicado en el mapa con pin azul");
     navigate({ to: "/" });
   };
 
+  const style = detected ? categoryStyle(`${detected.category} ${detected.title}`) : null;
+
   return (
     <div className="space-y-4">
-      <div className="grid h-56 place-items-center rounded-2xl border border-border bg-muted text-6xl">
-        {photos.length ? photos[photos.length - 1] : "📷"}
+      <div className="grid h-56 place-items-center overflow-hidden rounded-2xl border border-border bg-muted">
+        {photos.length ? (
+          <img
+            src={photos[photos.length - 1]}
+            alt="Foto del componente"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <Camera className="h-12 w-12 text-muted-foreground" />
+        )}
       </div>
       {photos.length > 1 && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto">
           {photos.map((p, i) => (
-            <span key={i} className="grid h-12 w-12 place-items-center rounded-xl bg-muted text-xl">
-              {p}
-            </span>
+            <img key={i} src={p} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
           ))}
         </div>
       )}
-      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={capture} />
-      <Button className="w-full rounded-2xl py-6 text-base" onClick={capture}>
+
+      <input
+        ref={cameraRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={handleFile}
+      />
+      <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+
+      <Button
+        className="w-full rounded-2xl py-6 text-base"
+        disabled={analyzing}
+        onClick={() => cameraRef.current?.click()}
+      >
         <Camera className="mr-2 h-5 w-5" /> Tomar fotografía
       </Button>
-      <Button variant="outline" className="w-full rounded-2xl" onClick={() => fileRef.current?.click()}>
-        Subir desde galería
+      <Button
+        variant="outline"
+        className="w-full rounded-2xl"
+        disabled={analyzing}
+        onClick={() => galleryRef.current?.click()}
+      >
+        <ImageAdd className="mr-2 h-4 w-4" /> Subir desde galería
       </Button>
 
       <div>
@@ -203,25 +242,31 @@ function OfrezcoStep() {
 
       {analyzing && (
         <div className="flex items-center gap-2 rounded-2xl border border-border bg-card p-4 text-sm shadow-sm">
-          <Sparkles className="h-4 w-4 animate-pulse text-primary" />
+          <Loader className="h-4 w-4 animate-spin text-primary" />
           Analizando componente con visión IA…
         </div>
       )}
 
-      {detected && !analyzing && (
+      {detected && style && !analyzing && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
             <Sparkles className="h-4 w-4" /> Detectado por IA
           </p>
           <p className="text-lg font-bold">{detected.title}</p>
-          <p className="text-sm text-muted-foreground">
-            {detected.category} · {detected.status}
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${style.badge}`}>
+              <style.Icon className="h-3.5 w-3.5" /> {detected.category}
+            </span>
+            · {detected.status}
           </p>
           <p className="text-sm">{detected.description}</p>
           <div className="flex flex-wrap gap-1.5">
             {detected.tags.map((t) => (
-              <span key={t} className="rounded-full bg-muted px-2.5 py-1 text-xs">
-                #{t}
+              <span
+                key={t}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${style.badge}`}
+              >
+                <style.Icon className="h-3 w-3" /> {t}
               </span>
             ))}
           </div>
@@ -246,11 +291,22 @@ function OfrezcoStep() {
         placeholder="Email / Teléfono / WhatsApp"
         className="rounded-2xl"
       />
-      <Button className="w-full rounded-full" disabled={!detected} onClick={publish}>
+      <Button className="w-full rounded-full" disabled={!detected || analyzing} onClick={publish}>
         Publicar
       </Button>
     </div>
   );
+}
+
+interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start: () => void;
+  stop: () => void;
+  onresult: ((e: any) => void) | null;
+  onerror: ((e: any) => void) | null;
+  onend: (() => void) | null;
 }
 
 function NecesitoStep() {
@@ -258,9 +314,12 @@ function NecesitoStep() {
   const navigate = useNavigate();
   const [text, setText] = useState("");
   const [listening, setListening] = useState(false);
+  const [photo, setPhoto] = useState<string | null>(null);
   const [refined, setRefined] = useState<{ title: string; category: string; tags: string[] } | null>(
     null,
   );
+  const recRef = useRef<SpeechRecognitionLike | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (text.trim().length < 12) {
@@ -289,13 +348,55 @@ function NecesitoStep() {
   }, [text]);
 
   const dictate = () => {
-    setListening(true);
-    setTimeout(() => {
-      setText(
-        "Necesito 4 servos MG996R y un driver PCA9685 para armar un brazo robótico con los chicos del taller.",
-      );
+    if (listening) {
+      recRef.current?.stop();
       setListening(false);
-    }, 1500);
+      return;
+    }
+    const w = window as unknown as {
+      SpeechRecognition?: new () => SpeechRecognitionLike;
+      webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+    };
+    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    if (!Ctor) {
+      toast.error("Tu navegador no soporta dictado por voz. Escribí el pedido a mano.");
+      return;
+    }
+    const rec = new Ctor();
+    rec.lang = "es-AR";
+    rec.continuous = true;
+    rec.interimResults = true;
+    let base = text ? `${text} ` : "";
+    rec.onresult = (e: any) => {
+      let chunk = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        chunk += e.results[i][0].transcript;
+        if (e.results[i].isFinal) {
+          base += `${e.results[i][0].transcript} `;
+          chunk = "";
+        }
+      }
+      setText((base + chunk).replace(/\s+/g, " ").trimStart());
+    };
+    rec.onerror = () => {
+      toast.error("No se pudo acceder al micrófono.");
+      setListening(false);
+    };
+    rec.onend = () => setListening(false);
+    recRef.current = rec;
+    rec.start();
+    setListening(true);
+  };
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      setPhoto(await fileToDataUrl(file));
+    } catch {
+      toast.error("No se pudo leer la imagen.");
+    }
   };
 
   const publish = () => {
@@ -311,11 +412,13 @@ function NecesitoStep() {
       contact: { type: "whatsapp", value: "+54 387 000 0000" },
       owner: "Vos",
       quantity: 1,
-      emoji: "🔎",
+      ...(photo ? { photo } : {}),
     });
     toast.success("Publicado en el mapa con pin naranja");
     navigate({ to: "/" });
   };
+
+  const style = refined ? categoryStyle(`${refined.category} ${refined.title}`) : null;
 
   return (
     <div className="space-y-4">
@@ -329,13 +432,21 @@ function NecesitoStep() {
         <button
           onClick={dictate}
           aria-label="Dictado por voz"
-          className={`absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-border bg-background ${
-            listening ? "animate-pulse text-accent" : "text-muted-foreground"
+          className={`absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-border ${
+            listening ? "animate-pulse bg-accent text-accent-foreground" : "bg-background text-muted-foreground"
           }`}
         >
           <Mic className="h-4 w-4" />
         </button>
       </div>
+
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+      {photo && (
+        <img src={photo} alt="Referencia del proyecto" className="h-40 w-full rounded-2xl object-cover" />
+      )}
+      <Button variant="outline" className="w-full rounded-2xl" onClick={() => fileRef.current?.click()}>
+        <ImageAdd className="mr-2 h-4 w-4" /> Adjuntar foto / referencia
+      </Button>
 
       <div>
         <h2 className="text-xl font-bold">Describí lo que necesitás</h2>
@@ -344,7 +455,7 @@ function NecesitoStep() {
         </p>
       </div>
 
-      {refined && (
+      {refined && style && (
         <div className="space-y-2 rounded-2xl border border-border bg-card p-4 shadow-sm">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-accent">
             <Sparkles className="h-4 w-4" /> Refinado por IA
@@ -353,8 +464,11 @@ function NecesitoStep() {
           <p className="text-sm text-muted-foreground">Categoría: {refined.category}</p>
           <div className="flex flex-wrap gap-1.5">
             {refined.tags.map((t) => (
-              <span key={t} className="rounded-full bg-muted px-2.5 py-1 text-xs">
-                #{t}
+              <span
+                key={t}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${style.badge}`}
+              >
+                <style.Icon className="h-3 w-3" /> {t}
               </span>
             ))}
           </div>

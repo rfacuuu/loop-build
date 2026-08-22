@@ -15,7 +15,8 @@ export interface Listing {
   createdAt: string; // ISO
   lat: number;
   lng: number;
-  emoji: string;
+  emoji?: string;
+  photo?: string;
 }
 
 const daysAgo = (d: number, h = 3) =>
