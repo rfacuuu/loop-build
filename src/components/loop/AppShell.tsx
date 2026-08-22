@@ -22,11 +22,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-muted/40">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background shadow-xl">
-        <header className="sticky top-0 z-20 flex items-center justify-center border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
-          <img src={logo.url} alt="LOOP" className="h-7 w-auto" />
-        </header>
+        {user ? (
+          <header className="sticky top-0 z-20 flex items-center justify-center border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
+            <img src={logo.url} alt="LOOP" className="h-7 w-auto" />
+          </header>
+        ) : null}
 
-        <main className="flex-1 pb-24">{!hydrated ? null : user ? children : <GoogleGate />}</main>
+        <main className={user ? "flex-1 pb-24" : "flex-1"}>
+          {!hydrated ? null : user ? children : <GoogleGate />}
+        </main>
+
 
         {user ? (
           <nav className="fixed bottom-0 z-30 w-full max-w-md border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur">
