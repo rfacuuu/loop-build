@@ -18,10 +18,9 @@ export const analyzeComponent = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => InputSchema.parse(d))
   .handler(async ({ data }): Promise<VisionResult> => {
     const apiKey = process.env["LOVABLE_API_KEY"];
-    const base = process.env["AGW_URL"] ?? "https://ai.gateway.lovable.dev";
     if (!apiKey) throw new Error("Falta la configuración de la IA (LOVABLE_API_KEY).");
 
-    const res = await fetch(`${base.replace(/\/$/, "")}/v1/chat/completions`, {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
       body: JSON.stringify({
