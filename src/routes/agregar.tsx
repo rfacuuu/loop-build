@@ -190,12 +190,14 @@ function OfrezcoStep() {
 
   return (
     <div className="space-y-4">
+      <Lightbox src={zoom} alt="Foto del componente" onClose={() => setZoom(null)} />
       <div className="grid h-56 place-items-center overflow-hidden rounded-2xl border border-border bg-muted">
         {photos.length ? (
           <img
             src={photos[photos.length - 1]}
             alt="Foto del componente"
-            className="h-full w-full object-cover"
+            onClick={() => setZoom(photos[photos.length - 1] ?? null)}
+            className="h-full w-full cursor-zoom-in object-cover"
           />
         ) : (
           <Camera className="h-12 w-12 text-muted-foreground" />
@@ -204,10 +206,17 @@ function OfrezcoStep() {
       {photos.length > 1 && (
         <div className="flex gap-2 overflow-x-auto">
           {photos.map((p, i) => (
-            <img key={i} src={p} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
+            <img
+              key={i}
+              src={p}
+              alt=""
+              onClick={() => setZoom(p)}
+              className="h-12 w-12 shrink-0 cursor-zoom-in rounded-xl object-cover"
+            />
           ))}
         </div>
       )}
+
 
       <input
         ref={cameraRef}
