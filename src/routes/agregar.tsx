@@ -464,9 +464,16 @@ function NecesitoStep() {
       </div>
 
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+      <Lightbox src={zoom} alt="Referencia del proyecto" onClose={() => setZoom(null)} />
       {photo && (
-        <img src={photo} alt="Referencia del proyecto" className="h-40 w-full rounded-2xl object-cover" />
+        <img
+          src={photo}
+          alt="Referencia del proyecto"
+          onClick={() => setZoom(photo)}
+          className="h-40 w-full cursor-zoom-in rounded-2xl object-cover"
+        />
       )}
+
       <Button variant="outline" className="w-full rounded-2xl" onClick={() => fileRef.current?.click()}>
         <ImageAdd className="mr-2 h-4 w-4" /> Adjuntar foto / referencia
       </Button>
