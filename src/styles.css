@@ -143,3 +143,11 @@
     color: var(--color-foreground);
   }
 }
+
+/* Keep Leaflet panes below app overlays (sheets, dialogs) */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control {
+  z-index: 1 !important;
+}
