@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLoop } from "@/lib/loop-store";
 import { toast } from "sonner";
+import ofrezcoImg from "@/assets/ofrezco.jpg.asset.json";
+import necesitoImg from "@/assets/necesito.jpg.asset.json";
 
 export const Route = createFileRoute("/agregar")({
   head: () => ({
@@ -84,7 +86,12 @@ function IntentStep({ onPick }: { onPick: (s: Step) => void }) {
       <h1 className="text-2xl font-bold tracking-tight">¿Qué querés publicar?</h1>
 
       <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        <div className="grid h-36 place-items-center bg-primary/10 text-5xl">📦</div>
+        <img
+          src={ofrezcoImg.url}
+          alt="Componentes electrónicos ofrecidos"
+          className="h-36 w-full object-cover"
+          loading="lazy"
+        />
         <div className="space-y-2 p-4">
           <h2 className="text-xl font-bold">Ofrezco…</h2>
           <p className="text-sm text-muted-foreground">
@@ -99,7 +106,12 @@ function IntentStep({ onPick }: { onPick: (s: Step) => void }) {
       </article>
 
       <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        <div className="grid h-36 place-items-center bg-accent/15 text-5xl">🔎</div>
+        <img
+          src={necesitoImg.url}
+          alt="Manos armando un circuito en protoboard"
+          className="h-36 w-full object-cover"
+          loading="lazy"
+        />
         <div className="space-y-2 p-4">
           <h2 className="text-xl font-bold">Necesito…</h2>
           <p className="text-sm text-muted-foreground">
