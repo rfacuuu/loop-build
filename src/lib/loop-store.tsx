@@ -35,7 +35,20 @@ export function LoopProvider({ children }: { children: ReactNode }) {
       if (raw) {
         const p = JSON.parse(raw);
         if (p.user) setUser(p.user);
-        if (Array.isArray(p.listings) && p.listings.length) setListings(p.listings);
+        if (Array.isArray(p.listings) && p.listings.length) {
+          // migrate legacy entries stored without real coordinates
+          setListings(
+            p.listings.map((l: Listing) =>
+              typeof l.lat === "number" && typeof l.lng === "number"
+                ? l
+                : {
+                    ...l,
+                    lat: -24.79 + (Math.random() - 0.5) * 0.08,
+                    lng: -65.41 + (Math.random() - 0.5) * 0.08,
+                  },
+            ),
+          );
+        }
         if (typeof p.dark === "boolean") setDark(p.dark);
       }
     } catch {

@@ -43,15 +43,17 @@ export default function MapView({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
-      {listings.map((l) => (
-        <Marker
-          key={l.id}
-          position={[l.lat, l.lng]}
-          icon={pinIcon(l.intent)}
-          eventHandlers={{ click: () => onSelect(l) }}
-          title={l.title}
-        />
-      ))}
+      {listings
+        .filter((l) => typeof l.lat === "number" && typeof l.lng === "number")
+        .map((l) => (
+          <Marker
+            key={l.id}
+            position={[l.lat, l.lng]}
+            icon={pinIcon(l.intent)}
+            eventHandlers={{ click: () => onSelect(l) }}
+            title={l.title}
+          />
+        ))}
     </MapContainer>
   );
 }
