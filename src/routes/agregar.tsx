@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Camera, Mic, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
+import { RiCameraLine as Camera, RiMicLine as Mic, RiSparkling2Line as Sparkles, RiArrowRightLine as ArrowRight, RiArrowLeftLine as ArrowLeft } from "@remixicon/react";
 import { AppShell } from "@/components/loop/AppShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,13 +11,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/agregar")({
   head: () => ({
     meta: [
-      { title: "Publicar hardware · LOOP Salta" },
+      { title: "Publicar hardware · LOOP" },
       {
         name: "description",
         content: "Ofrecé componentes o pedí las piezas que te faltan con análisis asistido por IA.",
       },
-      { property: "og:title", content: "Publicar hardware · LOOP Salta" },
-      { property: "og:description", content: "Ofrezco o Necesito: publicá en el mapa maker de Salta." },
+      { property: "og:title", content: "Publicar hardware · LOOP" },
+      { property: "og:description", content: "Ofrezco o Necesito: publicá en el mapa maker." },
     ],
   }),
   component: AgregarPage,
@@ -124,7 +124,7 @@ function OfrezcoStep() {
   const [detected, setDetected] = useState<(typeof DETECTIONS)[number] | null>(null);
   const [notes, setNotes] = useState("");
   const [contact, setContact] = useState("");
-  const [zone, setZone] = useState("Microcentro · Salta Capital");
+  const [zone, setZone] = useState("Microcentro");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const capture = () => {
@@ -295,7 +295,7 @@ function NecesitoStep() {
       status: "Buscando componentes",
       description: text,
       tags: refined.tags,
-      zone: "Salta Capital",
+      zone: "Zona sin especificar",
       contact: { type: "whatsapp", value: "+54 387 000 0000" },
       owner: "Vos",
       quantity: 1,

@@ -13,9 +13,10 @@ interface LoopState {
   listings: Listing[];
   dark: boolean;
   signIn: () => void;
+  signInDemo: () => void;
   signOut: () => void;
   toggleDark: () => void;
-  addListing: (l: Omit<Listing, "id" | "createdAt" | "x" | "y">) => Listing;
+  addListing: (l: Omit<Listing, "id" | "createdAt" | "lat" | "lng">) => Listing;
   removeListing: (id: string) => void;
 }
 
@@ -61,6 +62,10 @@ export function LoopProvider({ children }: { children: ReactNode }) {
       dark,
       signIn: () =>
         setUser({ name: "Facundo Romero", email: "facundo.romero@gmail.com", initials: "FR" }),
+      signInDemo: () => {
+        setListings((prev) => (prev.length ? prev : SEED_LISTINGS));
+        setUser({ name: "Jurado Invitado", email: "demo@loop.app", initials: "JI" });
+      },
       signOut: () => setUser(null),
       toggleDark: () => setDark((d) => !d),
       addListing: (l) => {
@@ -68,8 +73,8 @@ export function LoopProvider({ children }: { children: ReactNode }) {
           ...l,
           id: `u${Date.now()}`,
           createdAt: new Date().toISOString(),
-          x: 20 + Math.round(Math.random() * 60),
-          y: 18 + Math.round(Math.random() * 60),
+          lat: -24.79 + (Math.random() - 0.5) * 0.08,
+          lng: -65.41 + (Math.random() - 0.5) * 0.08,
         };
         setListings((prev) => [item, ...prev]);
         return item;

@@ -79,17 +79,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LOOP · Hardware circular para makers de Salta" },
+      { title: "LOOP · Hardware circular para makers" },
       {
         name: "description",
         content:
-          "Build. Learn. Reuse. Repeat. Red circular de componentes electrónicos para la comunidad maker de Salta.",
+          "Build. Learn. Reuse. Repeat. Red circular de componentes electrónicos para la comunidad maker.",
       },
-      { name: "author", content: "LOOP Salta" },
-      { property: "og:title", content: "LOOP · Hardware circular para makers de Salta" },
+      { name: "author", content: "LOOP" },
+      { property: "og:title", content: "LOOP · Hardware circular para makers" },
       {
         property: "og:description",
-        content: "Ofrecé y encontrá componentes electrónicos en Salta. Mantené la tecnología en movimiento.",
+        content: "Ofrecé y encontrá componentes electrónicos cerca tuyo. Mantené la tecnología en movimiento.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

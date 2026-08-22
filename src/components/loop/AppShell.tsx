@@ -1,18 +1,18 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { MapPin, Newspaper, Plus, User, Settings, type LucideIcon } from "lucide-react";
+import { RiMapPin2Line, RiNewspaperLine, RiAddLine, RiUser3Line, RiSettings3Line, type RemixiconComponentType } from "@remixicon/react";
 import type { ReactNode } from "react";
 import logo from "@/assets/loop_logo.svg.asset.json";
 import { useLoop } from "@/lib/loop-store";
 import { GoogleGate } from "./GoogleGate";
 
-type Tab = { to: "/" | "/actividad" | "/agregar" | "/perfil" | "/ajustes"; icon: LucideIcon; label: string; center?: boolean };
+type Tab = { to: "/" | "/actividad" | "/agregar" | "/perfil" | "/ajustes"; icon: RemixiconComponentType; label: string; center?: boolean };
 
 const tabs: Tab[] = [
-  { to: "/", icon: MapPin, label: "Mapa" },
-  { to: "/actividad", icon: Newspaper, label: "Actividad" },
-  { to: "/agregar", icon: Plus, label: "Agregar", center: true },
-  { to: "/perfil", icon: User, label: "Perfil" },
-  { to: "/ajustes", icon: Settings, label: "Ajustes" },
+  { to: "/", icon: RiMapPin2Line, label: "Mapa" },
+  { to: "/actividad", icon: RiNewspaperLine, label: "Actividad" },
+  { to: "/agregar", icon: RiAddLine, label: "Agregar", center: true },
+  { to: "/perfil", icon: RiUser3Line, label: "Perfil" },
+  { to: "/ajustes", icon: RiSettings3Line, label: "Ajustes" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

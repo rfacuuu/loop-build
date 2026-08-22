@@ -13,8 +13,8 @@ export interface Listing {
   owner: string;
   quantity: number;
   createdAt: string; // ISO
-  x: number; // 0-100 map position
-  y: number;
+  lat: number;
+  lng: number;
   emoji: string;
 }
 
@@ -36,8 +36,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Martín Guaymás",
     quantity: 2,
     createdAt: daysAgo(0, 2),
-    x: 48,
-    y: 42,
+    lat: -24.7883,
+    lng: -65.4106,
     emoji: "🧠",
   },
   {
@@ -54,8 +54,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Taller E.E.T. 3100",
     quantity: 6,
     createdAt: daysAgo(0, 6),
-    x: 62,
-    y: 68,
+    lat: -24.8155,
+    lng: -65.4172,
     emoji: "⚙️",
   },
   {
@@ -72,8 +72,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Club de Robótica UNSa",
     quantity: 4,
     createdAt: daysAgo(1),
-    x: 30,
-    y: 24,
+    lat: -24.7274,
+    lng: -65.4102,
     emoji: "🦾",
   },
   {
@@ -90,8 +90,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Lucía Cardozo",
     quantity: 1,
     createdAt: daysAgo(2),
-    x: 74,
-    y: 30,
+    lat: -24.7647,
+    lng: -65.3908,
     emoji: "🔌",
   },
   {
@@ -108,8 +108,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Punto Digital CdM",
     quantity: 3,
     createdAt: daysAgo(3),
-    x: 20,
-    y: 56,
+    lat: -24.8032,
+    lng: -65.4402,
     emoji: "🧩",
   },
   {
@@ -119,15 +119,15 @@ export const SEED_LISTINGS: Listing[] = [
     category: "Sensores",
     status: "Buscando 2 unidades",
     description:
-      "Para una estación meteorológica escolar en Cerrillos. Servirían también DHT11 si están calibrados.",
+      "Para una estación meteorológica escolar. Servirían también DHT11 si están calibrados.",
     tags: ["DHT22", "Temperatura", "Humedad"],
     zone: "Cerrillos",
     contact: { type: "whatsapp", value: "+54 387 570 3388" },
     owner: "Escuela Técnica Cerrillos",
     quantity: 2,
     createdAt: daysAgo(4),
-    x: 40,
-    y: 82,
+    lat: -24.8965,
+    lng: -65.4842,
     emoji: "🌡️",
   },
   {
@@ -140,12 +140,12 @@ export const SEED_LISTINGS: Listing[] = [
       "Aproximadamente 400 resistencias 1/4W surtidas y 80 capacitores electrolíticos. Vienen en caja organizadora.",
     tags: ["Pasivos", "Kit", "Soldadura"],
     zone: "Microcentro · Caseros",
-    contact: { type: "email", value: "makers.salta@gmail.com" },
-    owner: "Colectivo Makers Salta",
+    contact: { type: "email", value: "makers.colectivo@gmail.com" },
+    owner: "Colectivo Makers",
     quantity: 480,
     createdAt: daysAgo(5),
-    x: 55,
-    y: 50,
+    lat: -24.7906,
+    lng: -65.4165,
     emoji: "🎛️",
   },
   {
@@ -161,8 +161,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Nahuel Ríos",
     quantity: 2,
     createdAt: daysAgo(6),
-    x: 68,
-    y: 46,
+    lat: -24.7742,
+    lng: -65.3822,
     emoji: "🖥️",
   },
   {
@@ -172,15 +172,15 @@ export const SEED_LISTINGS: Listing[] = [
     category: "Automatización",
     status: "Buscando 1 unidad",
     description:
-      "Para automatizar el riego de la huerta comunitaria de San Luis. Preferentemente optoacoplado.",
+      "Para automatizar el riego de la huerta comunitaria del barrio. Preferentemente optoacoplado.",
     tags: ["Relé", "Riego", "Huerta"],
     zone: "Villa San Luis",
     contact: { type: "whatsapp", value: "+54 387 533 9902" },
     owner: "Huerta Comunitaria San Luis",
     quantity: 1,
     createdAt: daysAgo(9),
-    x: 26,
-    y: 70,
+    lat: -24.8221,
+    lng: -65.4453,
     emoji: "🔁",
   },
   {
@@ -197,8 +197,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "FabLab Castañares",
     quantity: 3,
     createdAt: daysAgo(12),
-    x: 44,
-    y: 16,
+    lat: -24.7402,
+    lng: -65.4258,
     emoji: "🔩",
   },
   {
@@ -211,12 +211,12 @@ export const SEED_LISTINGS: Listing[] = [
       "Raspberry Pi 3B funcionando, con fuente original 5V 2.5A. No incluye tarjeta microSD ni gabinete.",
     tags: ["Raspberry Pi", "Linux", "SBC"],
     zone: "Microcentro · España",
-    contact: { type: "email", value: "reuso.salta@gmail.com" },
-    owner: "Reuso Salta",
+    contact: { type: "email", value: "red.reuso@gmail.com" },
+    owner: "Red de Reuso",
     quantity: 1,
     createdAt: daysAgo(20),
-    x: 58,
-    y: 36,
+    lat: -24.7838,
+    lng: -65.4051,
     emoji: "🍓",
   },
   {
@@ -230,11 +230,11 @@ export const SEED_LISTINGS: Listing[] = [
     tags: ["LiPo", "Dron", "3S"],
     zone: "Zona Sur · Solidaridad",
     contact: { type: "whatsapp", value: "+54 387 590 2255" },
-    owner: "Taller Dron Salta",
+    owner: "Taller de Drones",
     quantity: 2,
     createdAt: daysAgo(28),
-    x: 36,
-    y: 62,
+    lat: -24.8288,
+    lng: -65.4098,
     emoji: "🔋",
   },
   {
@@ -251,8 +251,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Julieta Vilte",
     quantity: 40,
     createdAt: daysAgo(31),
-    x: 80,
-    y: 60,
+    lat: -24.7695,
+    lng: -65.3712,
     emoji: "♻️",
   },
   {
@@ -268,8 +268,8 @@ export const SEED_LISTINGS: Listing[] = [
     owner: "Punto Digital Villa Mitre",
     quantity: 1,
     createdAt: daysAgo(33),
-    x: 14,
-    y: 38,
+    lat: -24.8022,
+    lng: -65.4531,
     emoji: "🧵",
   },
 ];

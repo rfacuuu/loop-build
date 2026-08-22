@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { BadgeCheck, Star, Trash2 } from "lucide-react";
+import { RiVerifiedBadgeFill as BadgeCheck, RiStarFill as Star, RiDeleteBin6Line as Trash2 } from "@remixicon/react";
 import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { timeAgo } from "@/lib/loop-data";
@@ -8,13 +8,13 @@ import { timeAgo } from "@/lib/loop-data";
 export const Route = createFileRoute("/perfil")({
   head: () => ({
     meta: [
-      { title: "Perfil y reputación · LOOP Salta" },
+      { title: "Perfil y reputación · LOOP" },
       {
         name: "description",
         content: "Tu reputación maker, entregas completadas y publicaciones activas en LOOP.",
       },
-      { property: "og:title", content: "Perfil y reputación · LOOP Salta" },
-      { property: "og:description", content: "Reputación verificada de la comunidad maker de Salta." },
+      { property: "og:title", content: "Perfil y reputación · LOOP" },
+      { property: "og:description", content: "Reputación verificada de la comunidad maker." },
     ],
   }),
   component: PerfilPage,

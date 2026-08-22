@@ -6,13 +6,13 @@ import { bucketOf, timeAgo } from "@/lib/loop-data";
 export const Route = createFileRoute("/actividad")({
   head: () => ({
     meta: [
-      { title: "Actividad · LOOP Salta" },
+      { title: "Actividad · LOOP" },
       {
         name: "description",
-        content: "Timeline de novedades: componentes ofrecidos y buscados por la comunidad maker salteña.",
+        content: "Timeline de novedades: componentes ofrecidos y buscados por la comunidad maker.",
       },
-      { property: "og:title", content: "Actividad · LOOP Salta" },
-      { property: "og:description", content: "Novedades del reuso de hardware en Salta." },
+      { property: "og:title", content: "Actividad · LOOP" },
+      { property: "og:description", content: "Novedades del reuso de hardware." },
     ],
   }),
   component: ActividadPage,
