@@ -23,12 +23,27 @@ function Resizer() {
   return null;
 }
 
+function FlyTo({ target }: { target: Listing | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!target || typeof target.lat !== "number" || typeof target.lng !== "number") return;
+    const t = setTimeout(() => {
+      map.invalidateSize();
+      map.flyTo([target.lat, target.lng], 15, { duration: 1.2 });
+    }, 220);
+    return () => clearTimeout(t);
+  }, [map, target]);
+  return null;
+}
+
 export default function MapView({
   listings,
   onSelect,
+  focus = null,
 }: {
   listings: Listing[];
   onSelect: (l: Listing) => void;
+  focus?: Listing | null;
 }) {
   return (
     <MapContainer
@@ -39,6 +54,7 @@ export default function MapView({
       style={{ background: "transparent" }}
     >
       <Resizer />
+      <FlyTo target={focus} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
