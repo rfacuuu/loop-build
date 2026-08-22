@@ -341,7 +341,7 @@ function NecesitoStep() {
       setRefined({
         title: title.charAt(0).toUpperCase() + title.slice(1),
         category,
-        tags: Array.from(new Set(t.split(/\s+/).filter((w) => w.length > 4))).slice(0, 4),
+        tags: extractTags(text, 4),
       });
     }, 900);
     return () => clearTimeout(id);
@@ -366,17 +366,25 @@ function NecesitoStep() {
     rec.lang = "es-AR";
     rec.continuous = true;
     rec.interimResults = true;
-    let base = text ? `${text} ` : "";
+
+    // Texto ya escrito antes de empezar a dictar (nunca se reprocesa).
+    const base = text.trim();
+    let finalText = "";
+
     rec.onresult = (e: any) => {
-      let chunk = "";
+      let interim = "";
+      // Solo se recorren los resultados nuevos desde resultIndex.
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        chunk += e.results[i][0].transcript;
+        const transcript = String(e.results[i][0].transcript).trim();
+        if (!transcript) continue;
         if (e.results[i].isFinal) {
-          base += `${e.results[i][0].transcript} `;
-          chunk = "";
+          finalText = `${finalText} ${transcript}`.trim();
+        } else {
+          interim = `${interim} ${transcript}`.trim();
         }
       }
-      setText((base + chunk).replace(/\s+/g, " ").trimStart());
+      const next = [base, finalText, interim].filter(Boolean).join(" ").replace(/\s+/g, " ");
+      setText(next);
     };
     rec.onerror = () => {
       toast.error("No se pudo acceder al micrófono.");
@@ -387,6 +395,7 @@ function NecesitoStep() {
     rec.start();
     setListening(true);
   };
+
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
