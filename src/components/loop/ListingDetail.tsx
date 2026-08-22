@@ -1,8 +1,10 @@
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { timeAgo, type Listing } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
+import { Lightbox } from "@/components/loop/Lightbox";
+import { RiCloseLine } from "@remixicon/react";
 import { useState } from "react";
 
 export function ListingSheet({
@@ -13,6 +15,7 @@ export function ListingSheet({
   onOpenChange: (open: boolean) => void;
 }) {
   const [full, setFull] = useState(false);
+  const [zoom, setZoom] = useState<string | null>(null);
   if (!listing) return null;
   const accent = listing.intent === "ofrezco" ? "text-primary" : "text-accent";
   const { Icon, tile, badge } = categoryStyle(`${listing.category} ${listing.title}`);
@@ -21,22 +24,37 @@ export function ListingSheet({
     <Sheet
       open={!!listing}
       onOpenChange={(o) => {
-        if (!o) setFull(false);
+        if (!o) {
+          setFull(false);
+          setZoom(null);
+        }
         onOpenChange(o);
       }}
     >
-      <SheetContent side="bottom" className="mx-auto max-w-md overflow-y-auto rounded-t-3xl border-border">
-        <SheetHeader className="text-left">
-          <SheetTitle className="flex items-center gap-2 text-xl">
+      <SheetContent
+        side="bottom"
+        className="mx-auto flex max-h-[85vh] max-w-md flex-col overflow-hidden rounded-t-3xl border-border p-0 [&>button]:hidden"
+      >
+        <div className="sticky top-0 z-50 flex items-start gap-3 border-b bg-background/95 px-4 py-3 backdrop-blur">
+          <SheetTitle className="flex flex-1 items-center gap-2 text-left text-xl">
             <Icon className="h-5 w-5 shrink-0" /> {listing.title}
           </SheetTitle>
-        </SheetHeader>
-        <div className="space-y-4 px-4 pb-8">
+          <button
+            type="button"
+            aria-label="Cerrar detalle"
+            onClick={() => onOpenChange(false)}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground transition hover:bg-muted/70"
+          >
+            <RiCloseLine className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-24 pt-4">
           {listing.photo ? (
             <img
               src={listing.photo}
               alt={listing.title}
-              className="h-40 w-full rounded-2xl object-cover"
+              onClick={() => setZoom(listing.photo ?? null)}
+              className="h-40 w-full cursor-zoom-in rounded-2xl object-cover"
             />
           ) : (
             <div className={`grid h-36 place-items-center rounded-2xl ${tile}`}>
@@ -56,6 +74,7 @@ export function ListingSheet({
           </div>
           <p className={`text-sm font-medium ${accent}`}>{listing.status}</p>
           <p className="text-sm text-muted-foreground">{listing.description}</p>
+
 
           {full ? (
             <div className="space-y-3 rounded-2xl border border-border bg-muted/40 p-4 text-sm">
@@ -86,8 +105,10 @@ export function ListingSheet({
             {listing.contact.value}
           </Button>
         </div>
+        <Lightbox src={zoom} alt={listing.title} onClose={() => setZoom(null)} />
       </SheetContent>
     </Sheet>
+
   );
 }
 

@@ -16,7 +16,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLoop } from "@/lib/loop-store";
 import { categoryStyle } from "@/lib/category-icons";
 import { analyzeComponent, type VisionResult } from "@/lib/vision.functions";
+import { extractTags } from "@/lib/autotags";
+import { Lightbox } from "@/components/loop/Lightbox";
 import { toast } from "sonner";
+
 import ofrezcoImg from "@/assets/ofrezco.jpg.asset.json";
 import necesitoImg from "@/assets/necesito.jpg.asset.json";
 
@@ -141,6 +144,8 @@ function OfrezcoStep() {
   const [notes, setNotes] = useState("");
   const [contact, setContact] = useState("");
   const [zone, setZone] = useState("Microcentro");
+  const [zoom, setZoom] = useState<string | null>(null);
+
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
 
@@ -187,12 +192,14 @@ function OfrezcoStep() {
 
   return (
     <div className="space-y-4">
+      <Lightbox src={zoom} alt="Foto del componente" onClose={() => setZoom(null)} />
       <div className="grid h-56 place-items-center overflow-hidden rounded-2xl border border-border bg-muted">
         {photos.length ? (
           <img
             src={photos[photos.length - 1]}
             alt="Foto del componente"
-            className="h-full w-full object-cover"
+            onClick={() => setZoom(photos[photos.length - 1] ?? null)}
+            className="h-full w-full cursor-zoom-in object-cover"
           />
         ) : (
           <Camera className="h-12 w-12 text-muted-foreground" />
@@ -201,10 +208,17 @@ function OfrezcoStep() {
       {photos.length > 1 && (
         <div className="flex gap-2 overflow-x-auto">
           {photos.map((p, i) => (
-            <img key={i} src={p} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
+            <img
+              key={i}
+              src={p}
+              alt=""
+              onClick={() => setZoom(p)}
+              className="h-12 w-12 shrink-0 cursor-zoom-in rounded-xl object-cover"
+            />
           ))}
         </div>
       )}
+
 
       <input
         ref={cameraRef}
@@ -315,6 +329,8 @@ function NecesitoStep() {
   const [text, setText] = useState("");
   const [listening, setListening] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [zoom, setZoom] = useState<string | null>(null);
+
   const [refined, setRefined] = useState<{ title: string; category: string; tags: string[] } | null>(
     null,
   );
@@ -341,7 +357,7 @@ function NecesitoStep() {
       setRefined({
         title: title.charAt(0).toUpperCase() + title.slice(1),
         category,
-        tags: Array.from(new Set(t.split(/\s+/).filter((w) => w.length > 4))).slice(0, 4),
+        tags: extractTags(text, 4),
       });
     }, 900);
     return () => clearTimeout(id);
@@ -366,17 +382,25 @@ function NecesitoStep() {
     rec.lang = "es-AR";
     rec.continuous = true;
     rec.interimResults = true;
-    let base = text ? `${text} ` : "";
+
+    // Texto ya escrito antes de empezar a dictar (nunca se reprocesa).
+    const base = text.trim();
+    let finalText = "";
+
     rec.onresult = (e: any) => {
-      let chunk = "";
+      let interim = "";
+      // Solo se recorren los resultados nuevos desde resultIndex.
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        chunk += e.results[i][0].transcript;
+        const transcript = String(e.results[i][0].transcript).trim();
+        if (!transcript) continue;
         if (e.results[i].isFinal) {
-          base += `${e.results[i][0].transcript} `;
-          chunk = "";
+          finalText = `${finalText} ${transcript}`.trim();
+        } else {
+          interim = `${interim} ${transcript}`.trim();
         }
       }
-      setText((base + chunk).replace(/\s+/g, " ").trimStart());
+      const next = [base, finalText, interim].filter(Boolean).join(" ").replace(/\s+/g, " ");
+      setText(next);
     };
     rec.onerror = () => {
       toast.error("No se pudo acceder al micrófono.");
@@ -387,6 +411,7 @@ function NecesitoStep() {
     rec.start();
     setListening(true);
   };
+
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -441,9 +466,16 @@ function NecesitoStep() {
       </div>
 
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+      <Lightbox src={zoom} alt="Referencia del proyecto" onClose={() => setZoom(null)} />
       {photo && (
-        <img src={photo} alt="Referencia del proyecto" className="h-40 w-full rounded-2xl object-cover" />
+        <img
+          src={photo}
+          alt="Referencia del proyecto"
+          onClick={() => setZoom(photo)}
+          className="h-40 w-full cursor-zoom-in rounded-2xl object-cover"
+        />
       )}
+
       <Button variant="outline" className="w-full rounded-2xl" onClick={() => fileRef.current?.click()}>
         <ImageAdd className="mr-2 h-4 w-4" /> Adjuntar foto / referencia
       </Button>
