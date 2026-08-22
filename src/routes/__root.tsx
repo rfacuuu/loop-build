@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Build. Learn. Reuse. Repeat. Red circular de componentes electrónicos para la comunidad maker.",
       },
-      { name: "author", content: "LOOP Salta" },
+      { name: "author", content: "LOOP" },
       { property: "og:title", content: "LOOP · Hardware circular para makers" },
       {
         property: "og:description",
