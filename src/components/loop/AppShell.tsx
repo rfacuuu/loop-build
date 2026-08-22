@@ -1,17 +1,19 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { MapPin, Newspaper, Plus, User, Settings } from "lucide-react";
+import { MapPin, Newspaper, Plus, User, Settings, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/loop_logo.svg.asset.json";
 import { useLoop } from "@/lib/loop-store";
 import { GoogleGate } from "./GoogleGate";
 
-const tabs = [
+type Tab = { to: "/" | "/actividad" | "/agregar" | "/perfil" | "/ajustes"; icon: LucideIcon; label: string; center?: boolean };
+
+const tabs: Tab[] = [
   { to: "/", icon: MapPin, label: "Mapa" },
   { to: "/actividad", icon: Newspaper, label: "Actividad" },
   { to: "/agregar", icon: Plus, label: "Agregar", center: true },
   { to: "/perfil", icon: User, label: "Perfil" },
   { to: "/ajustes", icon: Settings, label: "Ajustes" },
-] as const;
+];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, hydrated } = useLoop();
@@ -24,9 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <img src={logo.url} alt="LOOP" className="h-7 w-auto" />
         </header>
 
-        <main className="flex-1 pb-24">
-          {!hydrated ? null : user ? children : <GoogleGate />}
-        </main>
+        <main className="flex-1 pb-24">{!hydrated ? null : user ? children : <GoogleGate />}</main>
 
         {user ? (
           <nav className="fixed bottom-0 z-30 w-full max-w-md border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur">
