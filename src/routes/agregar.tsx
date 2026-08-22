@@ -144,6 +144,8 @@ function OfrezcoStep() {
   const [notes, setNotes] = useState("");
   const [contact, setContact] = useState("");
   const [zone, setZone] = useState("Microcentro");
+  const [zoom, setZoom] = useState<string | null>(null);
+
   const cameraRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
 
