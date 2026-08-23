@@ -208,7 +208,7 @@ function MapaPage() {
           <button
             type="button"
             onClick={() => setMapFull((v) => !v)}
-            aria-label={mapFull ? "Reducir mapa" : "Ampliar mapa"}
+            aria-label={mapFull ? t("map.collapse") : t("map.expand")}
             className="absolute right-3 top-3 z-[5] grid h-9 w-9 place-items-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur"
           >
             {mapFull ? (
@@ -221,16 +221,16 @@ function MapaPage() {
 
         <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
           <SheetContent side="bottom" className="mx-auto max-w-md rounded-t-3xl">
-            <SheetTitle className="text-left text-lg">Filtros</SheetTitle>
+            <SheetTitle className="text-left text-lg">{t("map.filters")}</SheetTitle>
             <div className="space-y-4 pt-2">
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">Intención</p>
+                <p className="text-xs font-semibold text-muted-foreground">{t("map.intention")}</p>
                 <div className="flex gap-2">
                   {(["todos", "ofrezco", "necesito"] as const).map((f) => (
                     <button
                       key={f}
                       onClick={() => setFilter(f)}
-                      className={`rounded-full border px-4 py-1.5 text-sm capitalize transition-colors ${
+                      className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
                         filter === f
                           ? f === "necesito"
                             ? "border-accent bg-accent text-accent-foreground"
@@ -238,14 +238,18 @@ function MapaPage() {
                           : "border-border bg-card text-muted-foreground"
                       }`}
                     >
-                      {f}
+                      {f === "todos"
+                        ? t("intent.todos")
+                        : f === "ofrezco"
+                          ? t("intent.ofrezco")
+                          : t("intent.necesito")}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">Distancia</p>
+                <p className="text-xs font-semibold text-muted-foreground">{t("map.distance")}</p>
                 <div className="flex flex-wrap gap-2">
                   {RADII.map((r) => (
                     <button
