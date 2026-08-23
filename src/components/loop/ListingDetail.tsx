@@ -139,10 +139,20 @@ export function ListingSheet({
             {listing.contact.type === "whatsapp" ? "WhatsApp · " : "Email · "}
             {listing.contact.value}
           </Button>
+
+          <Button
+            variant="outline"
+            className="w-full gap-2 rounded-full border-primary/40 text-primary"
+            onClick={() => setPass(true)}
+          >
+            <RiQrCodeLine className="h-4 w-4" /> Retirar en Nodo Seguro
+          </Button>
         </div>
         <Lightbox src={zoom} alt={listing.title} onClose={() => setZoom(null)} />
+        <PickupPassDialog listing={listing} open={pass} onOpenChange={setPass} />
       </SheetContent>
     </Sheet>
+
 
   );
 }
