@@ -261,7 +261,7 @@ function MapaPage() {
                           : "border-border text-muted-foreground"
                       }`}
                     >
-                      {r.label || t("map.allDistances")}
+                      {r.label || t("map.all")}
                     </button>
                   ))}
                 </div>
