@@ -74,21 +74,21 @@ function ProyectosPage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nombre del proyecto"
+              placeholder={t("projects.namePlaceholder")}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             <textarea
               value={parts}
               onChange={(e) => setParts(e.target.value)}
               rows={3}
-              placeholder="Componentes separados por coma (ej: ESP32, sensor DHT22, fuente 12V)"
+              placeholder={t("projects.partsPlaceholder")}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             <button
               onClick={create}
               className="w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground"
             >
-              Crear proyecto
+              {t("projects.create")}
             </button>
           </div>
         ) : null}
@@ -106,7 +106,7 @@ function ProyectosPage() {
 
               <div>
                 <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-                  {done} de {total} piezas conseguidas en LOOP
+                  {t("projects.progress", { done, total })}
                 </p>
                 <div className="h-2 overflow-hidden rounded-full bg-muted">
                   <div
@@ -142,7 +142,7 @@ function ProyectosPage() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium"
               >
                 <RiMapPin2Line className="h-3.5 w-3.5" />
-                {missing.length ? "Buscar faltantes en el mapa" : "Ver piezas en el mapa"}
+                {missing.length ? t("projects.searchMissing") : t("projects.viewParts")}
               </Link>
             </article>
           );
