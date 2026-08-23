@@ -63,7 +63,13 @@ export function PickupPassDialog({
         </DialogDescription>
 
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-muted-foreground">Elegí el Nodo más cercano</p>
+          <p className="text-xs font-semibold text-muted-foreground">
+            Elegí el Punto de retiro LOOP más cercano
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            Ubicaciones demo de la red LOOP, no son sedes reales.
+          </p>
+
           <div className="space-y-2">
             {nodes.map((n) => {
               const active = n.id === node.id;

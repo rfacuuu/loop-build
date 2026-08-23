@@ -1,4 +1,4 @@
-/** Nodos físicos verificados donde se certifica la entrega de hardware. */
+/** Puntos de retiro LOOP (demo). Ubicaciones ficticias de la red LOOP. */
 export interface LoopNode {
   id: string;
   name: string;
@@ -11,42 +11,43 @@ export interface LoopNode {
 
 export const LOOP_NODES: LoopNode[] = [
   {
-    id: "eet3100",
-    name: "Nodo EET 3100",
-    detail: "Lab de Electrónica",
-    zone: "Zona Sur",
-    lat: -24.8155,
-    lng: -65.4172,
+    id: "nodo-norte",
+    name: "Nodo Tecnológico Norte",
+    detail: "Punto de retiro LOOP demo",
+    zone: "Zona Norte",
+    lat: -24.7402,
+    lng: -65.4258,
     hours: "Lun a Vie · 8 a 18 h",
   },
   {
-    id: "vapadu",
-    name: "Nodo Vapadu",
-    detail: "Centro / Makerspace",
-    zone: "Microcentro",
+    id: "hub-central",
+    name: "Hub de Innovación Central",
+    detail: "Punto de retiro LOOP demo",
+    zone: "Zona Centro",
     lat: -24.7891,
     lng: -65.4118,
     hours: "Lun a Sáb · 10 a 20 h",
   },
   {
-    id: "punto-digital",
-    name: "Nodo Punto Digital",
-    detail: "Sala comunitaria de tecnología",
-    zone: "Ciudad del Milagro",
+    id: "campus-maker",
+    name: "Campus Maker Comunitario",
+    detail: "Punto de retiro LOOP demo",
+    zone: "Zona Oeste",
     lat: -24.8032,
     lng: -65.4402,
     hours: "Lun a Vie · 9 a 17 h",
   },
   {
-    id: "ucasal",
-    name: "Nodo UCASAL",
-    detail: "Facultad de Ingeniería",
-    zone: "Castañares",
-    lat: -24.7402,
-    lng: -65.4258,
+    id: "centro-tec",
+    name: "Centro de Tecnología Aplicada",
+    detail: "Punto de retiro LOOP demo",
+    zone: "Zona Sur",
+    lat: -24.8155,
+    lng: -65.4172,
     hours: "Lun a Vie · 8 a 21 h",
   },
 ];
+
 
 /** ID de transacción determinístico y legible para el pase de retiro. */
 export function pickupCode(listingId: string, nodeId: string): string {

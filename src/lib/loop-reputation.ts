@@ -64,7 +64,7 @@ export const SEED_REVIEWS: Review[] = [
   },
   {
     id: "r2",
-    author: "FabLab Castañares",
+    author: "Nodo Tecnológico Norte",
     initials: "FC",
     rating: 5,
     comment: "Coordinamos por el Nodo y todo perfecto. Los NEMA 17 andaban impecables.",
