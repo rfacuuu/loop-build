@@ -8,6 +8,7 @@ import { Lightbox } from "@/components/loop/Lightbox";
 import { PickupPassDialog } from "@/components/loop/PickupPass";
 import { RiCloseLine, RiQrCodeLine, RiStarFill } from "@remixicon/react";
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n";
 
 export function ListingSheet({
   listing,
@@ -19,6 +20,7 @@ export function ListingSheet({
   const [full, setFull] = useState(false);
   const [zoom, setZoom] = useState<string | null>(null);
   const [pass, setPass] = useState(false);
+  const { t } = useI18n();
   if (!listing) return null;
   const accent = listing.intent === "ofrezco" ? "text-primary" : "text-accent";
   const { Icon, tile, badge } = categoryStyle(`${listing.category} ${listing.title}`);
@@ -44,7 +46,7 @@ export function ListingSheet({
           </SheetTitle>
           <button
             type="button"
-            aria-label="Cerrar detalle"
+            aria-label={t("detail.close")}
             onClick={() => onOpenChange(false)}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground transition hover:bg-muted/70"
           >
@@ -66,7 +68,7 @@ export function ListingSheet({
           )}
           <div className="flex flex-wrap gap-2">
             <Badge variant={listing.intent === "ofrezco" ? "default" : "secondary"} className="rounded-full">
-              {listing.intent === "ofrezco" ? "Ofrezco" : "Necesito"}
+              {listing.intent === "ofrezco" ? t("intent.ofrezco") : t("intent.necesito")}
             </Badge>
             <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${badge}`}>
               <Icon className="h-3.5 w-3.5" /> {listing.category}
@@ -90,7 +92,7 @@ export function ListingSheet({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{listing.owner}</p>
                 <p className="text-[11px] text-muted-foreground">
-                  Maker Score · {MAKER_SCORE.exchanges} intercambios completados
+                  {t("detail.makerScore", { n: MAKER_SCORE.exchanges })}
                 </p>
               </div>
               <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold">
@@ -113,25 +115,25 @@ export function ListingSheet({
 
           {full ? (
             <div className="space-y-3 rounded-2xl border border-border bg-muted/40 p-4 text-sm">
-              <Row label="Publicado por" value={listing.owner} />
-              <Row label="Cantidad" value={`${listing.quantity} unidad(es)`} />
-              <Row label="Publicado" value={timeAgo(listing.createdAt)} />
-              <Row label="Nodo asignado" value={listing.zone} />
-              <Row label="Zona aproximada" value={`${listing.zone} (radio ~500 m)`} />
+              <Row label={t("detail.publishedBy")} value={listing.owner} />
+              <Row label={t("detail.quantity")} value={t("detail.units", { n: listing.quantity })} />
+              <Row label={t("detail.published")} value={timeAgo(listing.createdAt)} />
+              <Row label={t("detail.assignedNode")} value={listing.zone} />
+              <Row label={t("detail.approxZone")} value={t("detail.radius", { zone: listing.zone })} />
               <div className="flex flex-wrap gap-1.5 pt-1">
-                {listing.tags.map((t) => (
+                {listing.tags.map((tag) => (
                   <span
-                    key={t}
+                    key={tag}
                     className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${badge}`}
                   >
-                    <Icon className="h-3 w-3" /> {t}
+                    <Icon className="h-3 w-3" /> {tag}
                   </span>
                 ))}
               </div>
             </div>
           ) : (
             <Button variant="outline" className="w-full rounded-full" onClick={() => setFull(true)}>
-              Ver detalle completo
+              {t("detail.fullDetail")}
             </Button>
           )}
 
@@ -145,7 +147,7 @@ export function ListingSheet({
             className="w-full gap-2 rounded-full border-primary/40 text-primary"
             onClick={() => setPass(true)}
           >
-            <RiQrCodeLine className="h-4 w-4" /> Retirar en Nodo Seguro
+            <RiQrCodeLine className="h-4 w-4" /> {t("detail.pickup")}
           </Button>
         </div>
         <Lightbox src={zoom} alt={listing.title} onClose={() => setZoom(null)} />
