@@ -92,13 +92,13 @@ function ActividadPage() {
                             : "bg-accent/15 text-accent"
                         }`}
                       >
-                        {l.intent === "ofrezco" ? "Ofrezco" : "Necesito"}
+                        {l.intent === "ofrezco" ? t("intent.ofrezco") : t("intent.necesito")}
                       </span>
                     </div>
                     <p className="mt-3 text-sm text-muted-foreground">
                       {l.intent === "ofrezco"
-                        ? `${l.quantity} componente(s) salvados del e-waste`
-                        : `Busca ${l.quantity} unidad(es)`}{" "}
+                        ? t("activity.saved", { n: l.quantity })
+                        : t("activity.looking", { n: l.quantity })}{" "}
                       · {l.zone}
                     </p>
                     <Link
@@ -106,7 +106,7 @@ function ActividadPage() {
                       search={{ focus: l.id }}
                       className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium"
                     >
-                      <MapPin className="h-3.5 w-3.5" /> Ver en el mapa
+                      <MapPin className="h-3.5 w-3.5" /> {t("activity.viewOnMap")}
                     </Link>
                   </article>
                 );
