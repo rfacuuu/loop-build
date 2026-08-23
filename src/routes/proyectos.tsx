@@ -57,14 +57,12 @@ function ProyectosPage() {
       <div className="space-y-5 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Proyectos</h1>
-            <p className="text-sm text-muted-foreground">
-              BOM Matcher: cruzá tu lista de materiales con el stock de la comunidad.
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight">{t("projects.title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("projects.subtitle")}</p>
           </div>
           <button
             onClick={() => setCreating((c) => !c)}
-            aria-label={creating ? "Cancelar" : "Nuevo proyecto"}
+            aria-label={creating ? t("projects.cancel") : t("projects.new")}
             className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"
           >
             {creating ? <RiCloseLine className="h-5 w-5" /> : <RiAddLine className="h-5 w-5" />}
