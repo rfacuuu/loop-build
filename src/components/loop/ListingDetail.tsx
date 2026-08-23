@@ -5,7 +5,8 @@ import { timeAgo, isVerified, type Listing } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
 import { MAKER_SCORE, trustBadges } from "@/lib/loop-reputation";
 import { Lightbox } from "@/components/loop/Lightbox";
-import { RiCloseLine, RiStarFill } from "@remixicon/react";
+import { PickupPassDialog } from "@/components/loop/PickupPass";
+import { RiCloseLine, RiQrCodeLine, RiStarFill } from "@remixicon/react";
 import { useState } from "react";
 
 export function ListingSheet({
@@ -17,6 +18,7 @@ export function ListingSheet({
 }) {
   const [full, setFull] = useState(false);
   const [zoom, setZoom] = useState<string | null>(null);
+  const [pass, setPass] = useState(false);
   if (!listing) return null;
   const accent = listing.intent === "ofrezco" ? "text-primary" : "text-accent";
   const { Icon, tile, badge } = categoryStyle(`${listing.category} ${listing.title}`);
@@ -137,10 +139,20 @@ export function ListingSheet({
             {listing.contact.type === "whatsapp" ? "WhatsApp · " : "Email · "}
             {listing.contact.value}
           </Button>
+
+          <Button
+            variant="outline"
+            className="w-full gap-2 rounded-full border-primary/40 text-primary"
+            onClick={() => setPass(true)}
+          >
+            <RiQrCodeLine className="h-4 w-4" /> Retirar en Nodo Seguro
+          </Button>
         </div>
         <Lightbox src={zoom} alt={listing.title} onClose={() => setZoom(null)} />
+        <PickupPassDialog listing={listing} open={pass} onOpenChange={setPass} />
       </SheetContent>
     </Sheet>
+
 
   );
 }
