@@ -4,6 +4,7 @@ import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { bucketOf, timeAgo } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/actividad")({
   head: () => ({
@@ -20,10 +21,15 @@ export const Route = createFileRoute("/actividad")({
   component: ActividadPage,
 });
 
-const ORDER = ["Hoy", "Esta semana", "El mes pasado"] as const;
+const ORDER = [
+  { bucket: "Hoy", key: "activity.today" },
+  { bucket: "Esta semana", key: "activity.week" },
+  { bucket: "El mes pasado", key: "activity.month" },
+] as const;
 
 function ActividadPage() {
   const { listings } = useLoop();
+  const { t } = useI18n();
   const sorted = [...listings].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
