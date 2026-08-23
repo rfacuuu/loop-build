@@ -4,6 +4,7 @@ import { RiAddLine, RiCheckLine, RiMapPin2Line, RiCloseLine } from "@remixicon/r
 import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { SEED_PROJECTS, bomProgress, type MakerProject } from "@/lib/loop-projects";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/proyectos")({
   head: () => ({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/proyectos")({
 
 function ProyectosPage() {
   const { listings } = useLoop();
+  const { t } = useI18n();
   const [projects, setProjects] = useState<MakerProject[]>(SEED_PROJECTS);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
@@ -36,7 +38,13 @@ function ProyectosPage() {
       .filter(Boolean)
       .map((p) => ({ name: p, qty: 1, keywords: p.toLowerCase().split(/\s+/).slice(0, 3) }));
     setProjects((prev) => [
-      { id: `up${Date.now()}`, name: name.trim(), summary: "Proyecto propio", author: "Vos", bom },
+      {
+        id: `up${Date.now()}`,
+        name: name.trim(),
+        summary: t("projects.own"),
+        author: t("projects.you"),
+        bom,
+      },
       ...prev,
     ]);
     setName("");
@@ -49,14 +57,12 @@ function ProyectosPage() {
       <div className="space-y-5 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Proyectos</h1>
-            <p className="text-sm text-muted-foreground">
-              BOM Matcher: cruzá tu lista de materiales con el stock de la comunidad.
-            </p>
+            <h1 className="text-2xl font-bold tracking-tight">{t("projects.title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("projects.subtitle")}</p>
           </div>
           <button
             onClick={() => setCreating((c) => !c)}
-            aria-label={creating ? "Cancelar" : "Nuevo proyecto"}
+            aria-label={creating ? t("projects.cancel") : t("projects.new")}
             className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"
           >
             {creating ? <RiCloseLine className="h-5 w-5" /> : <RiAddLine className="h-5 w-5" />}
@@ -68,21 +74,21 @@ function ProyectosPage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nombre del proyecto"
+              placeholder={t("projects.namePlaceholder")}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             <textarea
               value={parts}
               onChange={(e) => setParts(e.target.value)}
               rows={3}
-              placeholder="Componentes separados por coma (ej: ESP32, sensor DHT22, fuente 12V)"
+              placeholder={t("projects.partsPlaceholder")}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
             <button
               onClick={create}
               className="w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground"
             >
-              Crear proyecto
+              {t("projects.create")}
             </button>
           </div>
         ) : null}
@@ -100,7 +106,7 @@ function ProyectosPage() {
 
               <div>
                 <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-                  {done} de {total} piezas conseguidas en LOOP
+                  {t("projects.progress", { done, total })}
                 </p>
                 <div className="h-2 overflow-hidden rounded-full bg-muted">
                   <div
@@ -136,7 +142,7 @@ function ProyectosPage() {
                 className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium"
               >
                 <RiMapPin2Line className="h-3.5 w-3.5" />
-                {missing.length ? "Buscar faltantes en el mapa" : "Ver piezas en el mapa"}
+                {missing.length ? t("projects.searchMissing") : t("projects.viewParts")}
               </Link>
             </article>
           );

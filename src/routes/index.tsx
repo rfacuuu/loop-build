@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { AppShell } from "@/components/loop/AppShell";
 import { ListingSheet } from "@/components/loop/ListingDetail";
 import { useLoop } from "@/lib/loop-store";
+import { useI18n } from "@/lib/i18n";
 import { categoryStyle } from "@/lib/category-icons";
 import { MAP_CENTER, distanceKm, isVerified, type Listing } from "@/lib/loop-data";
 import { SEED_PROJECTS, bomProgress, matchesBom } from "@/lib/loop-projects";
@@ -19,7 +20,7 @@ import { SEED_PROJECTS, bomProgress, matchesBom } from "@/lib/loop-projects";
 const MapView = lazy(() => import("@/components/loop/MapView"));
 
 const RADII = [
-  { id: "todos", label: "Todos", km: Infinity },
+  { id: "todos", label: "", km: Infinity },
   { id: "5", label: "< 5 km", km: 5 },
   { id: "15", label: "< 15 km", km: 15 },
 ] as const;
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/")({
 
 function MapaPage() {
   const { listings } = useLoop();
+  const { t } = useI18n();
   const { focus, bom } = Route.useSearch();
   const [filter, setFilter] = useState<"todos" | "ofrezco" | "necesito">("todos");
   const [radius, setRadius] = useState<(typeof RADII)[number]["id"]>("todos");
@@ -118,20 +120,20 @@ function MapaPage() {
       <div className="space-y-3 p-4">
         {!mapFull ? (
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Mapa</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("map.title")}</h1>
             <p className="text-sm text-muted-foreground">
-              Ubicaciones aproximadas por privacidad · {visible.length} publicaciones activas
+              {t("map.subtitle", { n: visible.length })}
             </p>
           </div>
         ) : null}
 
         {project ? (
           <div className="rounded-2xl border border-accent/40 bg-accent/10 p-3 text-sm">
-            <p className="font-semibold">Faltantes de {project.name}</p>
+            <p className="font-semibold">{t("map.missingOf", { name: project.name })}</p>
             <p className="text-xs text-muted-foreground">
               {missing.length
                 ? missing.map((m) => m.name).join(" · ")
-                : "¡Ya conseguiste todas las piezas!"}
+                : t("map.allPartsFound")}
             </p>
           </div>
         ) : null}
@@ -143,12 +145,12 @@ function MapaPage() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar componente, zona o maker"
-              aria-label="Buscar publicaciones"
+              placeholder={t("map.search")}
+              aria-label={t("map.searchAria")}
               className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
             {query ? (
-              <button type="button" aria-label="Limpiar búsqueda" onClick={() => setQuery("")}>
+              <button type="button" aria-label={t("map.clearSearch")} onClick={() => setQuery("")}>
                 <RiCloseLine className="h-4 w-4 text-muted-foreground" />
               </button>
             ) : null}
@@ -158,7 +160,7 @@ function MapaPage() {
             onClick={() => setFiltersOpen(true)}
             className="relative inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-sm font-medium shadow-sm"
           >
-            <RiEqualizerLine className="h-4 w-4" /> Filtros
+            <RiEqualizerLine className="h-4 w-4" /> {t("map.filters")}
             {activeCount ? (
               <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
                 {activeCount}
@@ -206,7 +208,7 @@ function MapaPage() {
           <button
             type="button"
             onClick={() => setMapFull((v) => !v)}
-            aria-label={mapFull ? "Reducir mapa" : "Ampliar mapa"}
+            aria-label={mapFull ? t("map.collapse") : t("map.expand")}
             className="absolute right-3 top-3 z-[5] grid h-9 w-9 place-items-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur"
           >
             {mapFull ? (
@@ -219,16 +221,16 @@ function MapaPage() {
 
         <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
           <SheetContent side="bottom" className="mx-auto max-w-md rounded-t-3xl">
-            <SheetTitle className="text-left text-lg">Filtros</SheetTitle>
+            <SheetTitle className="text-left text-lg">{t("map.filters")}</SheetTitle>
             <div className="space-y-4 pt-2">
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">Intención</p>
+                <p className="text-xs font-semibold text-muted-foreground">{t("map.intention")}</p>
                 <div className="flex gap-2">
                   {(["todos", "ofrezco", "necesito"] as const).map((f) => (
                     <button
                       key={f}
                       onClick={() => setFilter(f)}
-                      className={`rounded-full border px-4 py-1.5 text-sm capitalize transition-colors ${
+                      className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
                         filter === f
                           ? f === "necesito"
                             ? "border-accent bg-accent text-accent-foreground"
@@ -236,14 +238,18 @@ function MapaPage() {
                           : "border-border bg-card text-muted-foreground"
                       }`}
                     >
-                      {f}
+                      {f === "todos"
+                        ? t("intent.todos")
+                        : f === "ofrezco"
+                          ? t("intent.ofrezco")
+                          : t("intent.necesito")}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">Distancia</p>
+                <p className="text-xs font-semibold text-muted-foreground">{t("map.distance")}</p>
                 <div className="flex flex-wrap gap-2">
                   {RADII.map((r) => (
                     <button
@@ -255,7 +261,7 @@ function MapaPage() {
                           : "border-border text-muted-foreground"
                       }`}
                     >
-                      {r.label}
+                      {r.label || t("map.all")}
                     </button>
                   ))}
                 </div>
@@ -267,7 +273,7 @@ function MapaPage() {
                 className="flex w-full items-center justify-between rounded-xl bg-muted/50 px-3 py-2 text-xs font-medium"
               >
                 <span className="inline-flex items-center gap-1.5">
-                  <RiShieldCheckLine className="h-4 w-4 text-primary" /> Solo verificados en Punto LOOP
+                  <RiShieldCheckLine className="h-4 w-4 text-primary" /> {t("map.onlyVerified")}
                 </span>
                 <span
                   className={`relative h-5 w-9 rounded-full transition-colors ${
@@ -292,13 +298,13 @@ function MapaPage() {
                   }}
                   className="flex-1 rounded-full border border-border py-2 text-sm font-medium text-muted-foreground"
                 >
-                  Limpiar
+                  {t("map.clear")}
                 </button>
                 <button
                   onClick={() => setFiltersOpen(false)}
                   className="flex-1 rounded-full bg-primary py-2 text-sm font-semibold text-primary-foreground"
                 >
-                  Ver {visible.length} resultados
+                  {t("map.seeResults", { n: visible.length })}
                 </button>
               </div>
             </div>

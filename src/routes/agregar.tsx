@@ -19,6 +19,7 @@ import { analyzeComponent, type VisionResult } from "@/lib/vision.functions";
 import { extractTags } from "@/lib/autotags";
 import { Lightbox } from "@/components/loop/Lightbox";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 import ofrezcoImg from "@/assets/ofrezco.jpg.asset.json";
 import necesitoImg from "@/assets/necesito.jpg.asset.json";
@@ -66,6 +67,7 @@ function fileToDataUrl(file: File, max = 1024): Promise<string> {
 
 function AgregarPage() {
   const [step, setStep] = useState<Step>("intent");
+  const { t } = useI18n();
 
   return (
     <AppShell>
@@ -75,7 +77,7 @@ function AgregarPage() {
             onClick={() => setStep("intent")}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground"
           >
-            <ArrowLeft className="h-4 w-4" /> Volver
+            <ArrowLeft className="h-4 w-4" /> {t("add.back")}
           </button>
         )}
 
@@ -88,9 +90,10 @@ function AgregarPage() {
 }
 
 function IntentStep({ onPick }: { onPick: (s: Step) => void }) {
+  const { t } = useI18n();
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold tracking-tight">¿Qué querés publicar?</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t("add.question")}</h1>
 
       <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <img
@@ -100,13 +103,11 @@ function IntentStep({ onPick }: { onPick: (s: Step) => void }) {
           loading="lazy"
         />
         <div className="space-y-2 p-4">
-          <h2 className="text-xl font-bold">Ofrezco…</h2>
-          <p className="text-sm text-muted-foreground">
-            Tengo componentes, placas o chatarra electrónica para donar o intercambiar.
-          </p>
+          <h2 className="text-xl font-bold">{t("add.offerTitle")}</h2>
+          <p className="text-sm text-muted-foreground">{t("add.offerDesc")}</p>
           <div className="flex justify-end">
             <Button className="rounded-full" onClick={() => onPick("ofrezco")}>
-              Ofrecer <ArrowRight className="ml-1 h-4 w-4" />
+              {t("add.offerCta")} <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -120,13 +121,11 @@ function IntentStep({ onPick }: { onPick: (s: Step) => void }) {
           loading="lazy"
         />
         <div className="space-y-2 p-4">
-          <h2 className="text-xl font-bold">Necesito…</h2>
-          <p className="text-sm text-muted-foreground">
-            Busco piezas para armar un proyecto maker o de robótica.
-          </p>
+          <h2 className="text-xl font-bold">{t("add.needTitle")}</h2>
+          <p className="text-sm text-muted-foreground">{t("add.needDesc")}</p>
           <div className="flex justify-end">
             <Button variant="secondary" className="rounded-full" onClick={() => onPick("necesito")}>
-              Necesito <ArrowRight className="ml-1 h-4 w-4" />
+              {t("add.needCta")} <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -136,6 +135,7 @@ function IntentStep({ onPick }: { onPick: (s: Step) => void }) {
 }
 
 function OfrezcoStep() {
+  const { t } = useI18n();
   const { addListing } = useLoop();
   const navigate = useNavigate();
   const [photos, setPhotos] = useState<string[]>([]);
@@ -160,7 +160,7 @@ function OfrezcoStep() {
       const result = await analyzeComponent({ data: { imageDataUrl: dataUrl, intent: "ofrezco" } });
       setDetected(result);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "No se pudo analizar la imagen.");
+      toast.error(err instanceof Error ? err.message : t("add.analyzeError"));
     } finally {
       setAnalyzing(false);
     }
@@ -184,7 +184,7 @@ function OfrezcoStep() {
       quantity: 1,
       ...(photos[0] ? { photo: photos[0] } : {}),
     });
-    toast.success("Publicado en el mapa con pin azul");
+    toast.success(t("add.publishedBlue"));
     navigate({ to: "/" });
   };
 
@@ -235,7 +235,7 @@ function OfrezcoStep() {
         disabled={analyzing}
         onClick={() => cameraRef.current?.click()}
       >
-        <Camera className="mr-2 h-5 w-5" /> Tomar fotografía
+        <Camera className="mr-2 h-5 w-5" /> {t("add.takePhoto")}
       </Button>
       <Button
         variant="outline"
@@ -243,28 +243,25 @@ function OfrezcoStep() {
         disabled={analyzing}
         onClick={() => galleryRef.current?.click()}
       >
-        <ImageAdd className="mr-2 h-4 w-4" /> Subir desde galería
+        <ImageAdd className="mr-2 h-4 w-4" /> {t("add.uploadPhoto")}
       </Button>
 
       <div>
-        <h2 className="text-xl font-bold">Sacá una foto</h2>
-        <p className="text-sm text-muted-foreground">
-          Apuntá directamente a lo que estás ofreciendo; mientras más fotografías en diferentes
-          ángulos, mejor.
-        </p>
+        <h2 className="text-xl font-bold">{t("add.photoTitle")}</h2>
+        <p className="text-sm text-muted-foreground">{t("add.photoHint")}</p>
       </div>
 
       {analyzing && (
         <div className="flex items-center gap-2 rounded-2xl border border-border bg-card p-4 text-sm shadow-sm">
           <Loader className="h-4 w-4 animate-spin text-primary" />
-          Analizando componente con visión IA…
+          {t("add.analyzing")}
         </div>
       )}
 
       {detected && style && !analyzing && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
-            <Sparkles className="h-4 w-4" /> Detectado por IA
+            <Sparkles className="h-4 w-4" /> {t("add.detected")}
           </p>
           <p className="text-lg font-bold">{detected.title}</p>
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -275,12 +272,12 @@ function OfrezcoStep() {
           </p>
           <p className="text-sm">{detected.description}</p>
           <div className="flex flex-wrap gap-1.5">
-            {detected.tags.map((t) => (
+            {detected.tags.map((tag) => (
               <span
-                key={t}
+                key={tag}
                 className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${style.badge}`}
               >
-                <style.Icon className="h-3 w-3" /> {t}
+                <style.Icon className="h-3 w-3" /> {tag}
               </span>
             ))}
           </div>
@@ -290,23 +287,23 @@ function OfrezcoStep() {
       <Textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
-        placeholder="Notas adicionales (estado, accesorios, horarios de entrega)…"
+        placeholder={t("add.notes")}
         className="min-h-24 rounded-2xl"
       />
       <Input
         value={zone}
         onChange={(e) => setZone(e.target.value)}
-        placeholder="Zona aproximada"
+        placeholder={t("add.zone")}
         className="rounded-2xl"
       />
       <Input
         value={contact}
         onChange={(e) => setContact(e.target.value)}
-        placeholder="Email / Teléfono / WhatsApp"
+        placeholder={t("add.contact")}
         className="rounded-2xl"
       />
       <Button className="w-full rounded-full" disabled={!detected || analyzing} onClick={publish}>
-        Publicar
+        {t("add.publish")}
       </Button>
     </div>
   );
@@ -324,6 +321,7 @@ interface SpeechRecognitionLike {
 }
 
 function NecesitoStep() {
+  const { t } = useI18n();
   const { addListing } = useLoop();
   const navigate = useNavigate();
   const [text, setText] = useState("");
@@ -343,14 +341,14 @@ function NecesitoStep() {
       return;
     }
     const id = setTimeout(() => {
-      const t = text.toLowerCase();
-      const category = t.includes("servo")
+      const low = text.toLowerCase();
+      const category = low.includes("servo")
         ? "Servomotores"
-        : t.includes("sensor")
+        : low.includes("sensor")
           ? "Sensores"
-          : t.includes("fuente") || t.includes("bateria") || t.includes("batería")
+          : low.includes("fuente") || low.includes("bateria") || low.includes("batería")
             ? "Alimentación"
-            : t.includes("motor") || t.includes("driver")
+            : low.includes("motor") || low.includes("driver")
               ? "Drivers y motores"
               : "Microcontroladores";
       const title = (text.trim().split(/[.,\n]/)[0] ?? text.trim()).slice(0, 48);
@@ -375,7 +373,7 @@ function NecesitoStep() {
     };
     const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!Ctor) {
-      toast.error("Tu navegador no soporta dictado por voz. Escribí el pedido a mano.");
+      toast.error(t("add.noSpeech"));
       return;
     }
     const rec = new Ctor();
@@ -403,7 +401,7 @@ function NecesitoStep() {
       setText(next);
     };
     rec.onerror = () => {
-      toast.error("No se pudo acceder al micrófono.");
+      toast.error(t("add.noMic"));
       setListening(false);
     };
     rec.onend = () => setListening(false);
@@ -420,7 +418,7 @@ function NecesitoStep() {
     try {
       setPhoto(await fileToDataUrl(file));
     } catch {
-      toast.error("No se pudo leer la imagen.");
+      toast.error(t("add.imageError"));
     }
   };
 
@@ -439,7 +437,7 @@ function NecesitoStep() {
       quantity: 1,
       ...(photo ? { photo } : {}),
     });
-    toast.success("Publicado en el mapa con pin naranja");
+    toast.success(t("add.publishedOrange"));
     navigate({ to: "/" });
   };
 
@@ -451,12 +449,12 @@ function NecesitoStep() {
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Necesito un…"
+          placeholder={t("add.needPlaceholder")}
           className="min-h-56 resize-none border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
         />
         <button
           onClick={dictate}
-          aria-label="Dictado por voz"
+          aria-label={t("add.hold")}
           className={`absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-border ${
             listening ? "animate-pulse bg-accent text-accent-foreground" : "bg-background text-muted-foreground"
           }`}
@@ -477,30 +475,30 @@ function NecesitoStep() {
       )}
 
       <Button variant="outline" className="w-full rounded-2xl" onClick={() => fileRef.current?.click()}>
-        <ImageAdd className="mr-2 h-4 w-4" /> Adjuntar foto / referencia
+        <ImageAdd className="mr-2 h-4 w-4" /> {t("add.attachPhoto")}
       </Button>
 
       <div>
-        <h2 className="text-xl font-bold">Describí lo que necesitás</h2>
-        <p className="text-sm text-muted-foreground">
-          Mientras más detalles agregues, mejores resultados de búsqueda obtendrás.
-        </p>
+        <h2 className="text-xl font-bold">{t("add.describeTitle")}</h2>
+        <p className="text-sm text-muted-foreground">{t("add.describeHint")}</p>
       </div>
 
       {refined && style && (
         <div className="space-y-2 rounded-2xl border border-border bg-card p-4 shadow-sm">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-accent">
-            <Sparkles className="h-4 w-4" /> Refinado por IA
+            <Sparkles className="h-4 w-4" /> {t("add.refined")}
           </p>
           <p className="font-bold">{refined.title}</p>
-          <p className="text-sm text-muted-foreground">Categoría: {refined.category}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("add.category")}: {refined.category}
+          </p>
           <div className="flex flex-wrap gap-1.5">
-            {refined.tags.map((t) => (
+            {refined.tags.map((tag) => (
               <span
-                key={t}
+                key={tag}
                 className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${style.badge}`}
               >
-                <style.Icon className="h-3 w-3" /> {t}
+                <style.Icon className="h-3 w-3" /> {tag}
               </span>
             ))}
           </div>
@@ -513,7 +511,7 @@ function NecesitoStep() {
         disabled={!refined}
         onClick={publish}
       >
-        Continuar
+        {t("add.continue")}
       </Button>
     </div>
   );

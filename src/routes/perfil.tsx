@@ -16,6 +16,7 @@ import { timeAgo, type Listing } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
 import { impactOf, formatArs } from "@/lib/loop-impact";
 import { MAKER_SCORE, SEED_REVIEWS, trustBadges } from "@/lib/loop-reputation";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/perfil")({
 
 function PerfilPage() {
   const { user, listings, removeListing } = useLoop();
+  const { t } = useI18n();
   const [tab, setTab] = useState<"necesito" | "ofrezco" | "reviews">("ofrezco");
   const [selected, setSelected] = useState<Listing | null>(null);
   const mine = listings.filter((l) => l.intent === tab);
@@ -57,7 +59,7 @@ function PerfilPage() {
             <p className="mt-1 flex items-center gap-1 text-sm font-semibold">
               <Star className="h-4 w-4 fill-accent text-accent" /> {MAKER_SCORE.rating}
               <span className="font-normal text-muted-foreground">
-                · {MAKER_SCORE.exchanges} intercambios
+                · {MAKER_SCORE.exchanges} {t("profile.exchanges")}
               </span>
             </p>
           </div>
@@ -66,30 +68,32 @@ function PerfilPage() {
         <section className="space-y-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
           <div>
             <h2 className="flex items-center gap-2 font-bold">
-              <RiRecycleLine className="h-5 w-5 text-primary" /> Impacto Circular
+              <RiRecycleLine className="h-5 w-5 text-primary" /> {t("profile.impactTitle")}
             </h2>
-            <p className="text-xs text-muted-foreground">
-              Calculado sobre tus publicaciones e intercambios completados.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("profile.impactHint")}</p>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <Metric
               Icon={RiRecycleLine}
               value={`${impact.ewasteKg} kg`}
-              label="E-waste evitado"
+              label={t("profile.ewaste")}
             />
-            <Metric Icon={RiCloudyLine} value={`${impact.co2Kg} kg`} label="CO₂ compensado" />
+            <Metric
+              Icon={RiCloudyLine}
+              value={`${impact.co2Kg} kg`}
+              label={t("profile.co2")}
+            />
             <Metric
               Icon={RiHandCoinLine}
               value={formatArs(impact.savingsArs)}
-              label="Ahorro comunitario"
+              label={t("profile.savings")}
             />
           </div>
         </section>
 
         <section className="space-y-2">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Maker Score · Badges de confianza
+            {t("profile.badges")}
           </h2>
           <div className="space-y-2">
             {badges.map(({ id, label, description, Icon, className }) => (
@@ -111,9 +115,9 @@ function PerfilPage() {
 
         <div className="grid grid-cols-3 gap-2 text-center">
           {[
-            [String(MAKER_SCORE.exchanges), "Entregas"],
-            [String(MAKER_SCORE.rating), "Rating"],
-            [String(impact.pieces), "Piezas reusadas"],
+            [String(MAKER_SCORE.exchanges), t("profile.handoffs")],
+            [String(MAKER_SCORE.rating), t("profile.rating")],
+            [String(impact.pieces), t("profile.pieces")],
           ].map(([v, k]) => (
             <div key={k} className="rounded-2xl border border-border bg-card p-3 shadow-sm">
               <p className="text-lg font-bold">{v}</p>
@@ -123,15 +127,19 @@ function PerfilPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-1 rounded-full bg-muted p-1">
-          {(["necesito", "ofrezco", "reviews"] as const).map((t) => (
+          {(["necesito", "ofrezco", "reviews"] as const).map((id) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={id}
+              onClick={() => setTab(id)}
               className={`rounded-full py-2 text-xs font-medium transition-colors ${
-                tab === t ? "bg-background shadow-sm" : "text-muted-foreground"
+                tab === id ? "bg-background shadow-sm" : "text-muted-foreground"
               }`}
             >
-              {t === "necesito" ? "Necesito" : t === "ofrezco" ? "Ofrezco" : "Reviews"}
+              {id === "necesito"
+                ? t("intent.necesito")
+                : id === "ofrezco"
+                  ? t("intent.ofrezco")
+                  : t("profile.reviews")}
             </button>
           ))}
         </div>
@@ -184,7 +192,7 @@ function PerfilPage() {
                     </span>
                   </button>
                   <button
-                    aria-label="Eliminar"
+                    aria-label={t("profile.delete")}
                     onClick={() => removeListing(l.id)}
                     className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                   >
