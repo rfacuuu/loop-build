@@ -7,6 +7,7 @@ import {
   RiRecycleLine,
   RiCloudyLine,
   RiHandCoinLine,
+  type RemixiconComponentType,
 } from "@remixicon/react";
 import { AppShell } from "@/components/loop/AppShell";
 import { ListingSheet } from "@/components/loop/ListingDetail";
@@ -205,7 +206,7 @@ function Metric({
   value,
   label,
 }: {
-  Icon: (props: { className?: string }) => JSX.Element;
+  Icon: RemixiconComponentType;
   value: string;
   label: string;
 }) {

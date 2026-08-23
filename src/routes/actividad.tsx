@@ -41,6 +41,19 @@ function ActividadPage() {
           </p>
         </div>
 
+        <Link
+          to="/proyectos"
+          className="flex items-center justify-between rounded-2xl border border-primary/30 bg-primary/5 p-4"
+        >
+          <span>
+            <span className="block text-sm font-semibold">Proyectos · BOM Matcher</span>
+            <span className="block text-xs text-muted-foreground">
+              Cruzá tu lista de materiales con el stock de la comunidad
+            </span>
+          </span>
+          <MapPin className="h-4 w-4 shrink-0 text-primary" />
+        </Link>
+
         {ORDER.map((bucket) => {
           const items = sorted.filter((l) => bucketOf(l.createdAt) === bucket);
           if (!items.length) return null;
