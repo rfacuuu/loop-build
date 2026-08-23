@@ -52,10 +52,12 @@ export default function MapView({
   listings,
   onSelect,
   focus = null,
+  showNodes = true,
 }: {
   listings: Listing[];
   onSelect: (l: Listing) => void;
   focus?: Listing | null;
+  showNodes?: boolean;
 }) {
   return (
     <MapContainer
@@ -71,6 +73,15 @@ export default function MapView({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
+      {showNodes
+        ? LOOP_NODES.map((n) => (
+            <Marker key={n.id} position={[n.lat, n.lng]} icon={nodeIcon()} title={n.name}>
+              <Tooltip direction="top" offset={[0, -12]}>
+                {n.name} · {n.detail}
+              </Tooltip>
+            </Marker>
+          ))
+        : null}
       {listings
         .filter((l) => typeof l.lat === "number" && typeof l.lng === "number")
         .map((l) => (
