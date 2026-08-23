@@ -120,20 +120,20 @@ function MapaPage() {
       <div className="space-y-3 p-4">
         {!mapFull ? (
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Mapa</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("map.title")}</h1>
             <p className="text-sm text-muted-foreground">
-              Ubicaciones aproximadas por privacidad · {visible.length} publicaciones activas
+              {t("map.subtitle", { n: visible.length })}
             </p>
           </div>
         ) : null}
 
         {project ? (
           <div className="rounded-2xl border border-accent/40 bg-accent/10 p-3 text-sm">
-            <p className="font-semibold">Faltantes de {project.name}</p>
+            <p className="font-semibold">{t("map.missingOf", { name: project.name })}</p>
             <p className="text-xs text-muted-foreground">
               {missing.length
                 ? missing.map((m) => m.name).join(" · ")
-                : "¡Ya conseguiste todas las piezas!"}
+                : t("map.allPartsFound")}
             </p>
           </div>
         ) : null}
@@ -145,12 +145,12 @@ function MapaPage() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar componente, zona o maker"
-              aria-label="Buscar publicaciones"
+              placeholder={t("map.search")}
+              aria-label={t("map.searchAria")}
               className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
             {query ? (
-              <button type="button" aria-label="Limpiar búsqueda" onClick={() => setQuery("")}>
+              <button type="button" aria-label={t("map.clearSearch")} onClick={() => setQuery("")}>
                 <RiCloseLine className="h-4 w-4 text-muted-foreground" />
               </button>
             ) : null}
@@ -160,7 +160,7 @@ function MapaPage() {
             onClick={() => setFiltersOpen(true)}
             className="relative inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-3 py-2 text-sm font-medium shadow-sm"
           >
-            <RiEqualizerLine className="h-4 w-4" /> Filtros
+            <RiEqualizerLine className="h-4 w-4" /> {t("map.filters")}
             {activeCount ? (
               <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
                 {activeCount}
