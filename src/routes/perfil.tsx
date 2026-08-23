@@ -16,6 +16,7 @@ import { timeAgo, type Listing } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
 import { impactOf, formatArs } from "@/lib/loop-impact";
 import { MAKER_SCORE, SEED_REVIEWS, trustBadges } from "@/lib/loop-reputation";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/perfil")({
 
 function PerfilPage() {
   const { user, listings, removeListing } = useLoop();
+  const { t } = useI18n();
   const [tab, setTab] = useState<"necesito" | "ofrezco" | "reviews">("ofrezco");
   const [selected, setSelected] = useState<Listing | null>(null);
   const mine = listings.filter((l) => l.intent === tab);
