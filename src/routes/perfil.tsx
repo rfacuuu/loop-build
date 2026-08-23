@@ -59,7 +59,7 @@ function PerfilPage() {
             <p className="mt-1 flex items-center gap-1 text-sm font-semibold">
               <Star className="h-4 w-4 fill-accent text-accent" /> {MAKER_SCORE.rating}
               <span className="font-normal text-muted-foreground">
-                · {MAKER_SCORE.exchanges} intercambios
+                · {MAKER_SCORE.exchanges} {t("profile.exchanges")}
               </span>
             </p>
           </div>
@@ -68,30 +68,32 @@ function PerfilPage() {
         <section className="space-y-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
           <div>
             <h2 className="flex items-center gap-2 font-bold">
-              <RiRecycleLine className="h-5 w-5 text-primary" /> Impacto Circular
+              <RiRecycleLine className="h-5 w-5 text-primary" /> {t("profile.impactTitle")}
             </h2>
-            <p className="text-xs text-muted-foreground">
-              Calculado sobre tus publicaciones e intercambios completados.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("profile.impactHint")}</p>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <Metric
               Icon={RiRecycleLine}
               value={`${impact.ewasteKg} kg`}
-              label="E-waste evitado"
+              label={t("profile.ewaste")}
             />
-            <Metric Icon={RiCloudyLine} value={`${impact.co2Kg} kg`} label="CO₂ compensado" />
+            <Metric
+              Icon={RiCloudyLine}
+              value={`${impact.co2Kg} kg`}
+              label={t("profile.co2")}
+            />
             <Metric
               Icon={RiHandCoinLine}
               value={formatArs(impact.savingsArs)}
-              label="Ahorro comunitario"
+              label={t("profile.savings")}
             />
           </div>
         </section>
 
         <section className="space-y-2">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Maker Score · Badges de confianza
+            {t("profile.badges")}
           </h2>
           <div className="space-y-2">
             {badges.map(({ id, label, description, Icon, className }) => (
