@@ -264,7 +264,7 @@ export const SEED_LISTINGS: Listing[] = [
     status: "Buscando 1 kit",
     description: "Para el club de programación del taller comunitario del barrio. Cualquier cantidad suma.",
     tags: ["Protoboard", "Dupont", "Club"],
-    zone: "Villa Mitre",
+    zone: "Zona Oeste",
     contact: { type: "email", value: "taller.comunitario@correo.com" },
     owner: "Taller Comunitario Oeste",
     quantity: 1,
