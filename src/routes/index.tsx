@@ -1,18 +1,19 @@
 import { createFileRoute, ClientOnly } from "@tanstack/react-router";
-import { Suspense, lazy, useEffect, useState } from "react";
-import { RiShieldCheckLine } from "@remixicon/react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import {
+  RiCloseLine,
+  RiEqualizerLine,
+  RiExpandDiagonalLine,
+  RiCollapseDiagonalLine,
+  RiSearchLine,
+  RiShieldCheckLine,
+} from "@remixicon/react";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { AppShell } from "@/components/loop/AppShell";
 import { ListingSheet } from "@/components/loop/ListingDetail";
 import { useLoop } from "@/lib/loop-store";
 import { categoryStyle } from "@/lib/category-icons";
-import {
-  CATEGORY_GROUPS,
-  MAP_CENTER,
-  distanceKm,
-  inCategoryGroup,
-  isVerified,
-  type Listing,
-} from "@/lib/loop-data";
+import { MAP_CENTER, distanceKm, isVerified, type Listing } from "@/lib/loop-data";
 import { SEED_PROJECTS, bomProgress, matchesBom } from "@/lib/loop-projects";
 
 const MapView = lazy(() => import("@/components/loop/MapView"));
