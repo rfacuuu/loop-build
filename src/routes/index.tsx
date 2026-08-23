@@ -261,7 +261,7 @@ function MapaPage() {
                           : "border-border text-muted-foreground"
                       }`}
                     >
-                      {r.label}
+                      {r.label || t("map.allDistances")}
                     </button>
                   ))}
                 </div>
@@ -273,7 +273,7 @@ function MapaPage() {
                 className="flex w-full items-center justify-between rounded-xl bg-muted/50 px-3 py-2 text-xs font-medium"
               >
                 <span className="inline-flex items-center gap-1.5">
-                  <RiShieldCheckLine className="h-4 w-4 text-primary" /> Solo verificados en Punto LOOP
+                  <RiShieldCheckLine className="h-4 w-4 text-primary" /> {t("map.onlyVerified")}
                 </span>
                 <span
                   className={`relative h-5 w-9 rounded-full transition-colors ${
@@ -298,13 +298,13 @@ function MapaPage() {
                   }}
                   className="flex-1 rounded-full border border-border py-2 text-sm font-medium text-muted-foreground"
                 >
-                  Limpiar
+                  {t("map.clear")}
                 </button>
                 <button
                   onClick={() => setFiltersOpen(false)}
                   className="flex-1 rounded-full bg-primary py-2 text-sm font-semibold text-primary-foreground"
                 >
-                  Ver {visible.length} resultados
+                  {t("map.seeResults", { n: visible.length })}
                 </button>
               </div>
             </div>
