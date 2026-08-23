@@ -1,10 +1,12 @@
 # LOOP · Hardware circular para makers
 
-**Build. Learn. Reuse. Repeat. Keep technology in motion.**
+**Build. Learn. Reuse. Repeat. — Keep technology in motion.**
 
-LOOP es una aplicación *mobile-first* que funciona como **mercado circular de hardware y red comunitaria para makers**. Permite ofrecer componentes electrónicos sobrantes o rescatados de e-waste, publicar necesidades de piezas para proyectos maker, organizar retiros en **Nodos seguros** y medir el impacto ambiental de la reutilización — todo desde una sola pantalla pensada para celular.
+LOOP es una aplicación *mobile-first* que funciona como **mercado circular de hardware y red comunitaria para makers**. Permite identificar componentes con IA, ofrecerlos o solicitarlos, organizar retiros en **Nodos seguros** con verificación QR y medir el impacto ambiental de la reutilización — todo desde una pantalla pensada para celular.
 
-> Red de componentes electrónicos para la comunidad maker: ofrecé y encontrá piezas cerca tuyo, mantené la tecnología en movimiento.
+> Una infraestructura física donde el hardware local circula entre makers, estudiantes y hubs. Toma una foto, matcheala, retirala en tu ciudad.
+
+**Pitch deck** · [PDF en Google Drive](https://drive.google.com/file/d/1xe5w5yhfGZjatRnOtHoL_OUIs5cucGCm/view) · **Video pitch** · [YouTube](https://www.youtube.com/watch?v=Pk_kuXanXTg)
 
 ---
 
@@ -12,67 +14,87 @@ LOOP es una aplicación *mobile-first* que funciona como **mercado circular de h
 
 La basura electrónica crece más rápido que cualquier otro flujo de residuos. Al mismo tiempo, miles de makers, clubes de robótica, escuelas técnicas y talleres comunitarios necesitan piezas (ESP32, drivers A4988, servos, fuentes ATX, sensores) que terminan tiradas en cajones o en contenedores.
 
-LOOP cierra ese ciclo conectando oferta y demanda de hardware a nivel barrial:
+LOOP cierra ese ciclo atacando cuatro fricciones concretas:
 
-- **Quien tiene** placas, chatarra o componentes que ya no usa puede donarlos o intercambiarlos.
-- **Quien necesita** piezas para un proyecto maker las encuentra en un mapa local y gestiona el retiro en un Nodo seguro.
-- **La comunidad** gana visibilidad del impacto: kg de e-waste evitado, CO₂ compensado y ahorro comunitario.
+| Fricción | Cómo se manifiesta |
+|---|---|
+| **Demoras de importación** | Un componente chico puede tardar semanas y costar mucho en flete. |
+| **Hardware ocioso** | Placas y sensores quedan en cajones mientras la ciudad importa lo mismo. |
+| **E-waste** | Equipamiento útil se descarta en vez de volver al circuito. |
+| **Barreras de prototipado** | Makers y estudiantes se frenan por una pieza que podrían encontrar en su ciudad. |
 
 ### Propuesta de valor
+
+Un **mercado circular local con operación global**: infraestructura física (Nodos) + matching con IA + cero fricción técnica (sacás una foto y matchea) + confianza (Maker Score) + impacto ambiental trazable.
 
 | | LOOP |
 |---|---|
 | **Foco** | Reutilización real de hardware, no compra |
 | **Unidad** | El Nodo físico de retiro (escuela/taller/maker space) |
-| **Confianza** | Reputación estilo Uber + publicaciones verificadas en Nodo |
-| **Datos** | Métricas de impacto ambiental cuantificables |
+| **Confianza** | Maker Score + publicaciones verificadas en Nodo + QR |
+| **Datos** | Métricas de impacto ambiental cuantificables y trazables |
 | **Acceso** | 100 % mobile-first, cámara + voz + IA generativa |
 
 ---
 
 ## Features principales
 
-Las features listadas a continuación están **implementadas en el código** de este repositorio (`src/routes`, `src/components/loop`, `src/lib`).
+Las features están **implementadas en el código** de este repositorio (`src/routes`, `src/components/loop`, `src/lib`) y se mapean a los cinco pilares del pitch deck.
 
-### 🗺️ Mapa interactivo (Tab *Mapa*)
+### 1. Identify — Identificación de hardware con IA (Tab *Agregar* · Ofrezco)
+- Subida multi-foto + captura con cámara (`capture="environment"`) (`src/routes/agregar.tsx`).
+- **Gemini Vision** (vía Lovable AI Gateway) lee la foto y autocompleta nombre, categoría, estado y tags técnicos (`src/lib/vision.functions.ts`, `src/lib/autotags.ts`).
+- Extracción de términos técnicos (ESP32, Arduino, A4988…) con filtrado de stopwords en español.
+
+### 2. Discovery — Mapa, voz y BOM matcher (Tab *Mapa* + *Proyectos*)
 - Mapa real con `react-leaflet` + tiles CartoDB Voyager (`src/components/loop/MapView.tsx`).
 - **Pins azules (#009DFF)** para *Ofrezco* y **pins naranjas (#FF8C00)** para *Necesito*.
-- Bottom sheet con mini-preview y detalle completo del componente (`ListingDetail.tsx`).
-- **Filtros colapsables** por categoría, radio de cercanía (Haversine) y switch *"solo verificados en Nodo"*.
-- **Tags dinámicos** de categoría en scroll horizontal, extraídos del stock real.
-- Búsqueda por texto y centrado del mapa con animación `flyTo` desde el feed.
+- **Voz & lenguaje natural** (Web Speech API): *"necesito un motor paso a paso y un driver para un brazo pequeño"*.
+- **BOM matcher**: proyectos maker con lista de materiales matcheada contra el inventario local de una vez (`src/lib/loop-projects.ts`, `src/routes/proyectos.tsx`).
+- Filtros colapsables por categoría, **radio de cercanía (Haversine)** y switch *"solo verificados en Nodo"*; tags dinámicos en scroll horizontal extraídos del stock real.
+- Bottom sheet con mini-preview y detalle completo + lightbox con zoom (`ListingDetail.tsx`, `Lightbox.tsx`).
 
-### 📰 Actividad (Tab *Actividad*)
-- Timeline/feed de novedades agrupado en buckets: *Hoy*, *Esta semana*, *El mes pasado* (`src/routes/actividad.tsx`).
-- Tarjetas con tipo (ofrezco/necesito), cantidad de piezas y acción *Ver en el mapa*.
+### 3. Logistics — Nodos seguros y verificación QR
+- Red de **Nodos demo** (Nodo Tecnológico Norte, Hub de Innovación Central, Campus Maker Comunitario, Centro de Tecnología Aplicada) como puntos de intercambio locales y seguros (`src/lib/loop-nodes.ts`).
+- Botón *Retirar en Nodo Seguro* que genera un **Pase de Retiro con QR** que confirma identidad, origen y estado al retirar (`src/components/loop/PickupPass.tsx`).
 
-### ➕ Agregar / Publicar (Tab *Agregar*)
-- Selección de intento: **Ofrezco** o **Necesito** (`src/routes/agregar.tsx`).
-- **Ofrezco**: subida multi-foto + captura con cámara (`capture="environment"`), análisis con **Gemini Vision** (vía Lovable AI Gateway) que autocompleta nombre, categoría, estado y tags (`src/lib/vision.functions.ts`).
-- **Necesito**: prompt de texto + **dictado por voz** (Web Speech API) + foto adjunta. Refinamiento automático con extracción de términos técnicos y filtrado de stopwords en español (`src/lib/autotags.ts`).
+### 4. Trust — Reputación y Maker Score (Tab *Perfil*)
+- **Maker Score** estilo Uber/Airbnb construido sobre intercambios reales completados (`src/lib/loop-reputation.ts`, `src/routes/perfil.tsx`).
+- Validación comunitaria, historial de intercambios trazable, identidad verificada y badges (Reciclador, Fundador).
 
-### 👤 Perfil & Reputación (Tab *Perfil*)
-- Reputación estilo Uber/Airbnb con score promedio, badges y reseñas de comunidad (`src/lib/loop-reputation.ts`, `src/routes/perfil.tsx`).
+### 5. Impact — Economía circular medible
 - **Métricas de impacto ambiental**: kg de e-waste evitado, CO₂ compensado, ahorro comunitario en ARS y piezas reinsertadas (`src/lib/loop-impact.ts`).
-- Secciones *Lo que necesito* / *Lo que ofrezco* con edición y borrado, abriendo el detalle en modal.
+- Reporte de sostenibilidad por Nodo y por proyecto; cada reuso es trazable.
 
-### 🗂️ Proyectos maker / BOM Matcher
-- Creación de proyectos con lista de materiales (BOM) y búsqueda de piezas faltantes en el mapa (`src/lib/loop-projects.ts`, `src/routes/proyectos.tsx`).
+### Feed & Actividad (Tab *Actividad*)
+- Timeline de novedades agrupado en *Hoy*, *Esta semana*, *El mes pasado* con acción *Ver en el mapa* que centra y abre el detalle (`src/routes/actividad.tsx`).
 
-### 🏪 Nodos físicos & Pase de retiro con QR
-- Red de **Nodos demo** (Nodo Tecnológico Norte, Hub de Innovación Central, Campus Maker Comunitario, Centro de Tecnología Aplicada) identificados como *Punto de retiro LOOP demo* (`src/lib/loop-nodes.ts`).
-- Botón *Retirar en Nodo Seguro* que genera un **Pase de Retiro con QR** mockeado (`src/components/loop/PickupPass.tsx`).
-
-### ⚙️ Ajustes & Cuenta (Tab *Ajustes*)
-- Información de cuenta, **toggle dark/light mode**, preferencias y notificaciones.
-- **Switcher de idioma Español / English** con estado global persistente (`src/lib/i18n.tsx`) que re-renderiza toda la app al instante.
+### Ajustes & Cuenta (Tab *Ajustes*)
+- Información de cuenta, **toggle dark/light**, preferencias y notificaciones.
+- **Switcher de idioma Español / English** con estado global persistente que re-renderiza toda la app al instante (`src/lib/i18n.tsx`).
 - Acceso rápido *Modo Demo (Jurado / Invitado)* en la pantalla de login (`src/components/loop/GoogleGate.tsx`).
 
-### 🎨 Sistema de diseño
+### Sistema de diseño
 - Tipografía **Instrument Sans** (Google Fonts).
 - Paleta: fondo claro `#F8F9FA`, Azul Eléctrico `#009DFF` (Ofrezco), Naranja Vibrante `#FF8C00` (Necesito).
 - Iconografía con **Remix Icon** (`@remixicon/react`) y mapeo categoría → icono + color (`src/lib/category-icons.tsx`).
-- Lightbox con zoom de imagen y header sticky en el detalle (`src/components/loop/Lightbox.tsx`).
+- Header sticky con botón de cierre siempre visible en el detalle.
+
+---
+
+## Modelo de negocio y roadmap
+
+### Modelo de negocio (sostenibilidad)
+- **B2B / B2G**: trabajo con hubs e instituciones para abastecer Nodos locales.
+- **Fee logístico**: una pequeña tarifa sobre la logística del Nodo fondea la red y mantiene el circuito activo.
+- **Sponsoreo de componentes**: empresas devuelven hardware excedente a la comunidad.
+
+### Roadmap
+1. **Sandbox local** — primeros Nodos comunitarios y base piloto de makers.
+2. **Expansión regional / país** — hubs técnicos en la región y el país.
+3. **Escrow programable** — contratos y escrow para intercambio seguro.
+
+> Los valores de impacto del demo son ilustrativos. El modelo está diseñado para medir el e-waste real evitado una vez que la red esté operativa.
 
 ---
 
@@ -179,12 +201,12 @@ src/
 │   ├── agregar.tsx         # Tab Agregar (Ofrezco/Necesito + IA)
 │   ├── perfil.tsx          # Tab Perfil (reputación + impacto)
 │   ├── ajustes.tsx         # Tab Ajustes (cuenta, tema, idioma)
-│   └── proyectos.tsx       # Proyectos maker / BOM
+│   └── proyectos.tsx      # Proyectos maker / BOM
 ├── components/loop/        # Componentes de dominio LOOP
 │   ├── AppShell.tsx        # Navegación inferior de 5 tabs
 │   ├── GoogleGate.tsx      # Login / bienvenida + Modo Demo
 │   ├── MapView.tsx         # Mapa Leaflet interactivo
-│   ├── ListingDetail.tsx   # Bottom sheet de detalle
+│   ├── ListingDetail.tsx  # Bottom sheet de detalle
 │   ├── Lightbox.tsx        # Zoom de imagen
 │   └── PickupPass.tsx      # Pase de retiro con QR
 ├── lib/                    # Lógica de dominio
@@ -193,9 +215,9 @@ src/
 │   ├── loop-impact.ts      # Métricas ambientales (e-waste, CO₂, ARS)
 │   ├── loop-nodes.ts       # Nodos físicos demo de retiro
 │   ├── loop-projects.ts    # Proyectos maker + BOM matcher
-│   ├── loop-reputation.ts  # Score, badges y reseñas
+│   ├── loop-reputation.ts  # Maker Score, badges y reseñas
 │   ├── autotags.ts         # Extracción de tags técnicos + stopwords ES
-│   ├── category-icons.tsx  # Mapeo categoría → icono/color
+│   ├── category-icons.tsx # Mapeo categoría → icono/color
 │   ├── i18n.tsx            # Provider + diccionario ES/EN
 │   └── vision.functions.ts# Server fn Gemini Vision
 ├── components/ui/          # Primitivos shadcn/ui (new-york)
@@ -206,10 +228,10 @@ src/
 
 ## Créditos
 
-Desarrollado por el equipo LOOP para la hackathon:
+Desarrollado por los co-fundadores de LOOP para la hackathon:
 
-- **Facundo Romero**
-- **Maria Gisel Chavez**
+- **Facundo Romero** — Lead AI Builder & Product Strategy
+- **Maria Gisel Chavez** — Product, Outreach & Project Operations
 
 > *Build. Learn. Reuse. Repeat. — Keep technology in motion.*
 
