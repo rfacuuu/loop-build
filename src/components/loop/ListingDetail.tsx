@@ -1,10 +1,11 @@
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { timeAgo, type Listing } from "@/lib/loop-data";
+import { timeAgo, isVerified, type Listing } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
+import { MAKER_SCORE, trustBadges } from "@/lib/loop-reputation";
 import { Lightbox } from "@/components/loop/Lightbox";
-import { RiCloseLine } from "@remixicon/react";
+import { RiCloseLine, RiStarFill } from "@remixicon/react";
 import { useState } from "react";
 
 export function ListingSheet({
@@ -74,6 +75,38 @@ export function ListingSheet({
           </div>
           <p className={`text-sm font-medium ${accent}`}>{listing.status}</p>
           <p className="text-sm text-muted-foreground">{listing.description}</p>
+
+          <div className="space-y-2 rounded-2xl border border-border bg-muted/40 p-3">
+            <div className="flex items-center gap-2">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                {listing.owner
+                  .split(" ")
+                  .slice(0, 2)
+                  .map((w) => w[0])
+                  .join("")}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{listing.owner}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Maker Score · {MAKER_SCORE.exchanges} intercambios completados
+                </p>
+              </div>
+              <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold">
+                <RiStarFill className="h-3.5 w-3.5 text-accent" /> {MAKER_SCORE.rating}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {trustBadges(isVerified(listing) ? 12 : 4).map(({ id, label, Icon, className }) => (
+                <span
+                  key={id}
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium ${className}`}
+                >
+                  <Icon className="h-3 w-3" /> {label}
+                </span>
+              ))}
+            </div>
+          </div>
+
 
 
           {full ? (

@@ -306,3 +306,42 @@ export function bucketOf(iso: string): "Hoy" | "Esta semana" | "El mes pasado" {
   if (d < 7) return "Esta semana";
   return "El mes pasado";
 }
+
+/** Centro de referencia del mapa (vista regional por defecto). */
+export const MAP_CENTER: [number, number] = [-24.79, -65.41];
+
+/** Distancia aproximada en km entre dos coordenadas (haversine). */
+export function distanceKm(
+  [lat1, lng1]: [number, number],
+  [lat2, lng2]: [number, number],
+): number {
+  const R = 6371;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+/** Publicaciones validadas en un Nodo físico (determinístico por id). */
+export function isVerified(listing: Listing): boolean {
+  let h = 0;
+  for (const ch of listing.id) h = (h * 31 + ch.charCodeAt(0)) % 1000;
+  return h % 3 !== 0;
+}
+
+/** Grupos de categoría usados en los filtros rápidos del mapa. */
+export const CATEGORY_GROUPS = [
+  { id: "micro", label: "Microcontroladores", re: /(micro|placa|arduino|esp32|sbc|raspberry)/i },
+  { id: "sensores", label: "Sensores", re: /(sensor|m[oó]dulo|rel[eé]|automatiz|dht)/i },
+  { id: "motores", label: "Motores", re: /(motor|driver|servo|stepper|nema)/i },
+  { id: "fuentes", label: "Fuentes", re: /(fuente|aliment|energ|bater|lipo)/i },
+] as const;
+
+export function inCategoryGroup(listing: Listing, groupId: string): boolean {
+  const group = CATEGORY_GROUPS.find((g) => g.id === groupId);
+  if (!group) return true;
+  return group.re.test(`${listing.category} ${listing.title} ${listing.tags.join(" ")}`);
+}
