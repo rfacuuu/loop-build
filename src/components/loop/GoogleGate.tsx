@@ -6,6 +6,7 @@ import hero from "@/assets/loop-hero.jpg.asset.json";
 
 export function GoogleGate() {
   const { signIn, signInDemo } = useLoop();
+  const { t } = useI18n();
   return (
     <div className="flex min-h-screen flex-col">
       <div className="relative -mt-px">
