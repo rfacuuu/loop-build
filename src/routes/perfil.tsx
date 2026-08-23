@@ -115,9 +115,9 @@ function PerfilPage() {
 
         <div className="grid grid-cols-3 gap-2 text-center">
           {[
-            [String(MAKER_SCORE.exchanges), "Entregas"],
-            [String(MAKER_SCORE.rating), "Rating"],
-            [String(impact.pieces), "Piezas reusadas"],
+            [String(MAKER_SCORE.exchanges), t("profile.handoffs")],
+            [String(MAKER_SCORE.rating), t("profile.rating")],
+            [String(impact.pieces), t("profile.pieces")],
           ].map(([v, k]) => (
             <div key={k} className="rounded-2xl border border-border bg-card p-3 shadow-sm">
               <p className="text-lg font-bold">{v}</p>
@@ -127,15 +127,19 @@ function PerfilPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-1 rounded-full bg-muted p-1">
-          {(["necesito", "ofrezco", "reviews"] as const).map((t) => (
+          {(["necesito", "ofrezco", "reviews"] as const).map((id) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={id}
+              onClick={() => setTab(id)}
               className={`rounded-full py-2 text-xs font-medium transition-colors ${
-                tab === t ? "bg-background shadow-sm" : "text-muted-foreground"
+                tab === id ? "bg-background shadow-sm" : "text-muted-foreground"
               }`}
             >
-              {t === "necesito" ? "Necesito" : t === "ofrezco" ? "Ofrezco" : "Reviews"}
+              {id === "necesito"
+                ? t("intent.necesito")
+                : id === "ofrezco"
+                  ? t("intent.ofrezco")
+                  : t("profile.reviews")}
             </button>
           ))}
         </div>
@@ -188,7 +192,7 @@ function PerfilPage() {
                     </span>
                   </button>
                   <button
-                    aria-label="Eliminar"
+                    aria-label={t("profile.delete")}
                     onClick={() => removeListing(l.id)}
                     className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                   >
