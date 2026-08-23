@@ -36,7 +36,15 @@ export function PickupPassDialog({
   const nodes = useMemo(
     () =>
       [...LOOP_NODES]
-        .map((n) => ({ ...n, km: distanceKm([listing.lat, listing.lng] ?? MAP_CENTER, [n.lat, n.lng]) }))
+        .map((n) => ({
+          ...n,
+          km: distanceKm(
+            typeof listing.lat === "number" && typeof listing.lng === "number"
+              ? [listing.lat, listing.lng]
+              : MAP_CENTER,
+            [n.lat, n.lng],
+          ),
+        }))
         .sort((a, b) => a.km - b.km),
     [listing.lat, listing.lng],
   );
