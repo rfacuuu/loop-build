@@ -3,20 +3,22 @@ import { RiMapPin2Line, RiNewspaperLine, RiAddLine, RiUser3Line, RiSettings3Line
 import type { ReactNode } from "react";
 import logo from "@/assets/loop_logo.svg.asset.json";
 import { useLoop } from "@/lib/loop-store";
+import { useI18n, type TKey } from "@/lib/i18n";
 import { GoogleGate } from "./GoogleGate";
 
-type Tab = { to: "/" | "/actividad" | "/agregar" | "/perfil" | "/ajustes"; icon: RemixiconComponentType; label: string; center?: boolean };
+type Tab = { to: "/" | "/actividad" | "/agregar" | "/perfil" | "/ajustes"; icon: RemixiconComponentType; label: TKey; center?: boolean };
 
 const tabs: Tab[] = [
-  { to: "/", icon: RiMapPin2Line, label: "Mapa" },
-  { to: "/actividad", icon: RiNewspaperLine, label: "Actividad" },
-  { to: "/agregar", icon: RiAddLine, label: "Agregar", center: true },
-  { to: "/perfil", icon: RiUser3Line, label: "Perfil" },
-  { to: "/ajustes", icon: RiSettings3Line, label: "Ajustes" },
+  { to: "/", icon: RiMapPin2Line, label: "nav.map" },
+  { to: "/actividad", icon: RiNewspaperLine, label: "nav.activity" },
+  { to: "/agregar", icon: RiAddLine, label: "nav.add", center: true },
+  { to: "/perfil", icon: RiUser3Line, label: "nav.profile" },
+  { to: "/ajustes", icon: RiSettings3Line, label: "nav.settings" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user, hydrated } = useLoop();
+  const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -42,7 +44,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <li key={to} className="flex justify-center">
                     <Link
                       to={to}
-                      aria-label={label}
+                      aria-label={t(label)}
                       className={
                         center
                           ? "-mt-6 grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30"

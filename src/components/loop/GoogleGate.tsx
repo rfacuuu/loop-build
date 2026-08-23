@@ -1,5 +1,6 @@
 import { RiGoogleFill, RiFlashlightLine } from "@remixicon/react";
 import { useLoop } from "@/lib/loop-store";
+import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import hero from "@/assets/loop-hero.jpg.asset.json";
 
