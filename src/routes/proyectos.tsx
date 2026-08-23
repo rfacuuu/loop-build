@@ -38,7 +38,13 @@ function ProyectosPage() {
       .filter(Boolean)
       .map((p) => ({ name: p, qty: 1, keywords: p.toLowerCase().split(/\s+/).slice(0, 3) }));
     setProjects((prev) => [
-      { id: `up${Date.now()}`, name: name.trim(), summary: "Proyecto propio", author: "Vos", bom },
+      {
+        id: `up${Date.now()}`,
+        name: name.trim(),
+        summary: t("projects.own"),
+        author: t("projects.you"),
+        bom,
+      },
       ...prev,
     ]);
     setName("");
