@@ -65,7 +65,10 @@ function MapaPage() {
     if (category && !inCategoryGroup(l, category)) return false;
     if (onlyVerified && !isVerified(l)) return false;
     if (Number.isFinite(maxKm) && distanceKm(MAP_CENTER, [l.lat, l.lng]) > maxKm) return false;
-    if (project && !missing.some((item) => matchesBom(l, item))) return false;
+    if (project) {
+      if (l.intent !== "ofrezco") return false;
+      if (!missing.some((item) => matchesBom(l, item))) return false;
+    }
     return true;
   });
 
