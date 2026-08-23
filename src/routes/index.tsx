@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { AppShell } from "@/components/loop/AppShell";
 import { ListingSheet } from "@/components/loop/ListingDetail";
 import { useLoop } from "@/lib/loop-store";
+import { useI18n } from "@/lib/i18n";
 import { categoryStyle } from "@/lib/category-icons";
 import { MAP_CENTER, distanceKm, isVerified, type Listing } from "@/lib/loop-data";
 import { SEED_PROJECTS, bomProgress, matchesBom } from "@/lib/loop-projects";
@@ -19,7 +20,7 @@ import { SEED_PROJECTS, bomProgress, matchesBom } from "@/lib/loop-projects";
 const MapView = lazy(() => import("@/components/loop/MapView"));
 
 const RADII = [
-  { id: "todos", label: "Todos", km: Infinity },
+  { id: "todos", label: "", km: Infinity },
   { id: "5", label: "< 5 km", km: 5 },
   { id: "15", label: "< 15 km", km: 15 },
 ] as const;
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/")({
 
 function MapaPage() {
   const { listings } = useLoop();
+  const { t } = useI18n();
   const { focus, bom } = Route.useSearch();
   const [filter, setFilter] = useState<"todos" | "ofrezco" | "necesito">("todos");
   const [radius, setRadius] = useState<(typeof RADII)[number]["id"]>("todos");
