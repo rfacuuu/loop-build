@@ -4,6 +4,7 @@ import { RiAddLine, RiCheckLine, RiMapPin2Line, RiCloseLine } from "@remixicon/r
 import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { SEED_PROJECTS, bomProgress, type MakerProject } from "@/lib/loop-projects";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/proyectos")({
   head: () => ({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/proyectos")({
 
 function ProyectosPage() {
   const { listings } = useLoop();
+  const { t } = useI18n();
   const [projects, setProjects] = useState<MakerProject[]>(SEED_PROJECTS);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
