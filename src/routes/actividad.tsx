@@ -41,10 +41,8 @@ function ActividadPage() {
     <AppShell>
       <div className="space-y-5 p-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Actividad</h1>
-          <p className="text-sm text-muted-foreground">
-            {saved} componentes rescatados de la basura electrónica.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("activity.title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("activity.subtitle", { n: saved })}</p>
         </div>
 
         <Link
@@ -52,21 +50,21 @@ function ActividadPage() {
           className="flex items-center justify-between rounded-2xl border border-primary/30 bg-primary/5 p-4"
         >
           <span>
-            <span className="block text-sm font-semibold">Proyectos · BOM Matcher</span>
+            <span className="block text-sm font-semibold">{t("activity.bomCard")}</span>
             <span className="block text-xs text-muted-foreground">
-              Cruzá tu lista de materiales con el stock de la comunidad
+              {t("activity.bomCardHint")}
             </span>
           </span>
           <MapPin className="h-4 w-4 shrink-0 text-primary" />
         </Link>
 
-        {ORDER.map((bucket) => {
+        {ORDER.map(({ bucket, key }) => {
           const items = sorted.filter((l) => bucketOf(l.createdAt) === bucket);
           if (!items.length) return null;
           return (
             <section key={bucket} className="space-y-3">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {bucket}
+                {t(key)}
               </h2>
               {items.map((l) => {
                 const { Icon, tile } = categoryStyle(`${l.category} ${l.title}`);
