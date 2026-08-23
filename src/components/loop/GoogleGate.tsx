@@ -21,15 +21,12 @@ export function GoogleGate() {
       </div>
 
       <div className="-mt-10 flex flex-1 flex-col justify-end gap-7 px-6 pb-10">
-        <p className="text-center text-base text-muted-foreground">
-          Build. Learn. Reuse. Repeat. La red circular de hardware para makers. Mantené la
-          tecnología en movimiento.
-        </p>
+        <p className="text-center text-base text-muted-foreground">{t("gate.slogan")}</p>
 
         <div className="space-y-3">
           <Button size="lg" className="w-full rounded-full" onClick={signIn}>
             <RiGoogleFill className="mr-2 h-5 w-5" />
-            Continuar con Google
+            {t("gate.google")}
           </Button>
           <Button
             size="lg"
@@ -38,13 +35,11 @@ export function GoogleGate() {
             onClick={signInDemo}
           >
             <RiFlashlightLine className="mr-2 h-5 w-5" />
-            Ingresar en Modo Demo (Jurado / Invitado)
+            {t("gate.demo")}
           </Button>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Verificamos identidades únicas para que los intercambios sean seguros.
-        </p>
+        <p className="text-center text-xs text-muted-foreground">{t("gate.legal")}</p>
       </div>
     </div>
   );
