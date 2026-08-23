@@ -3,7 +3,8 @@ import { AppShell } from "@/components/loop/AppShell";
 import { useLoop } from "@/lib/loop-store";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { RiNotification3Line as Bell, RiFileTextLine as FileText, RiMoonLine as Moon, RiShieldCheckLine as Shield, RiUserSettingsLine as UserCog } from "@remixicon/react";
+import { RiNotification3Line as Bell, RiFileTextLine as FileText, RiMoonLine as Moon, RiShieldCheckLine as Shield, RiUserSettingsLine as UserCog, RiTranslate2 as Translate } from "@remixicon/react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/ajustes")({
   head: () => ({
