@@ -3,6 +3,7 @@ import { RiBuilding2Line, RiShieldCheckLine, RiTimeLine } from "@remixicon/react
 import { useMemo, useState } from "react";
 import { LOOP_NODES, pickupCode, qrMatrix } from "@/lib/loop-nodes";
 import { MAP_CENTER, distanceKm, type Listing } from "@/lib/loop-data";
+import { useI18n } from "@/lib/i18n";
 
 function MockQr({ seed }: { seed: string }) {
   const grid = useMemo(() => qrMatrix(seed), [seed]);
@@ -48,6 +49,7 @@ export function PickupPassDialog({
         .sort((a, b) => a.km - b.km),
     [listing.lat, listing.lng],
   );
+  const { t } = useI18n();
   const [nodeId, setNodeId] = useState(nodes[0]!.id);
   const node = nodes.find((n) => n.id === nodeId) ?? nodes[0]!;
   const code = pickupCode(listing.id, node.id);
@@ -56,18 +58,18 @@ export function PickupPassDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="mx-auto max-h-[88vh] max-w-md overflow-y-auto rounded-3xl">
         <DialogTitle className="flex items-center gap-2 text-lg">
-          <RiShieldCheckLine className="h-5 w-5 text-primary" /> Pase de Retiro LOOP
+          <RiShieldCheckLine className="h-5 w-5 text-primary" /> {t("pickup.title")}
         </DialogTitle>
         <DialogDescription className="text-xs">
-          {listing.title} · {listing.quantity} unidad(es)
+          {listing.title} · {t("pickup.units", { n: listing.quantity })}
         </DialogDescription>
 
         <div className="space-y-2">
           <p className="text-xs font-semibold text-muted-foreground">
-            Elegí el Punto de retiro LOOP más cercano
+            {t("pickup.pick")}
           </p>
           <p className="text-[11px] text-muted-foreground">
-            Ubicaciones demo de la red LOOP, no son sedes reales.
+            {t("pickup.demo")}
           </p>
 
           <div className="space-y-2">
@@ -108,8 +110,7 @@ export function PickupPassDialog({
             <RiTimeLine className="h-3.5 w-3.5" /> {node.hours}
           </p>
           <p className="text-center text-xs text-muted-foreground">
-            Mostrá este QR en el Nodo para certificar la entrega física y activar las 48 hs de
-            garantía.
+            {t("pickup.legend")}
           </p>
         </div>
       </DialogContent>
