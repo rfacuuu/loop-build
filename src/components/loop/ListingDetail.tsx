@@ -1,10 +1,11 @@
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { timeAgo, type Listing } from "@/lib/loop-data";
+import { timeAgo, isVerified, type Listing } from "@/lib/loop-data";
 import { categoryStyle } from "@/lib/category-icons";
+import { MAKER_SCORE, trustBadges } from "@/lib/loop-reputation";
 import { Lightbox } from "@/components/loop/Lightbox";
-import { RiCloseLine } from "@remixicon/react";
+import { RiCloseLine, RiStarFill } from "@remixicon/react";
 import { useState } from "react";
 
 export function ListingSheet({
